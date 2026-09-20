@@ -1,0 +1,30 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+*.tsbuildinfo
+
+# tests and reports
+coverage/
+test-results/
+playwright-report/
+
+# local environment (keep the example committed)
+.env*
+!.env.example
+
+# Supabase local state
+supabase/.branches/
+supabase/.temp/
+
+# operating systems and editors
+.DS_Store
+Thumbs.db
+*.swp
+
+# logs
+*.log
+pnpm-debug.log*
