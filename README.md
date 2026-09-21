@@ -1,8 +1,8 @@
 # Finanças Pessoais
 
 Aplicação web de inteligência financeira pessoal definida em `MASTER_SPEC.md`.
-O repositório está na Fase 0: fundação técnica, autenticação e isolamento de
-perfil. Funcionalidades financeiras ainda não foram implementadas.
+O repositório concluiu a fundação e possui o núcleo de domínio financeiro
+versionado. Ainda não há upload, parser ou dashboard de produto.
 
 ## Pré-requisitos
 
@@ -84,6 +84,9 @@ anônimas não leem perfis.
 
 Mudanças estruturais futuras devem ser novas migrations forward-only. Depois de
 qualquer migration, execute `pnpm db:reset`, `pnpm db:test` e `pnpm db:types`.
+Como os tipos do Supabase refletem o banco aplicado, após aplicar a migration
+financeira no projeto online também será necessário regenerá-los num Supabase
+local ou conectado; nenhuma chave administrativa é guardada neste repositório.
 
 ## CI
 
