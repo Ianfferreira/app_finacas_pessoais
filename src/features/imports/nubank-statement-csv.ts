@@ -1,5 +1,3 @@
-import { createHash } from "node:crypto";
-
 export const NUBANK_STATEMENT_CSV_HEADERS = [
   "Data",
   "Valor",
@@ -97,8 +95,4 @@ export function parseNubankStatementCsv(
     });
   }
   return { success: true, rows };
-}
-
-export function sha256(content: string | Uint8Array): string {
-  return createHash("sha256").update(content).digest("hex");
 }

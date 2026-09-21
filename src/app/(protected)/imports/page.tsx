@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { importNubankCsv } from "./actions";
+import { ImportForm } from "./import-form";
 export default async function ImportsPage({
   searchParams,
 }: {
@@ -23,15 +23,7 @@ export default async function ImportsPage({
             {error}
           </p>
         ) : null}
-        <form className="stack" action={importNubankCsv}>
-          <label>
-            Arquivo CSV
-            <input accept=".csv,text/csv" name="file" required type="file" />
-          </label>
-          <button className="button primary" type="submit">
-            Importar e confirmar
-          </button>
-        </form>
+        <ImportForm />
       </section>
     </main>
   );

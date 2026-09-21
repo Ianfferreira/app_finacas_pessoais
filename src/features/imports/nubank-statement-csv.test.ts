@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { parseNubankStatementCsv, sha256 } from "./nubank-statement-csv";
+import { sha256 } from "./file-hash";
+import { parseNubankStatementCsv } from "./nubank-statement-csv";
 
 describe("Nubank statement CSV parser", () => {
   it("parses the documented header and quoted descriptions without float arithmetic", () => {

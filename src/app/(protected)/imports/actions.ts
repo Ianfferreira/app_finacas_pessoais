@@ -2,10 +2,8 @@
 
 import { redirect } from "next/navigation";
 
-import {
-  parseNubankStatementCsv,
-  sha256,
-} from "@/features/imports/nubank-statement-csv";
+import { sha256 } from "@/features/imports/file-hash";
+import { parseNubankStatementCsv } from "@/features/imports/nubank-statement-csv";
 import { createClient } from "@/lib/supabase/server";
 
 export async function importNubankCsv(formData: FormData) {
