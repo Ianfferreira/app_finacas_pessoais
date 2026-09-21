@@ -36,8 +36,12 @@ antes de qualquer tela que leia essas tabelas.
   B; o dono também não consegue reescrever dado bruto.
 - `pnpm check`: passou — Prettier, ESLint, TypeScript, 19 testes Vitest e build
   de produção.
-- `pnpm db:start`: não executou as migrations/testes pgTAP porque este
-  computador não possui Docker Desktop nem Podman no `PATH`.
+- `pnpm db:start` e `pnpm db:reset`: passaram; migrations aplicadas em banco
+  local vazio.
+- `pnpm db:test`: passou — 26 verificações pgTAP de RLS e imutabilidade de
+  evidência bruta.
+- `pnpm db:types`: passou; tipos TypeScript regenerados a partir do schema
+  local real.
 
 ## Limitações deliberadas
 

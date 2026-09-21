@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(12);
+select plan(14);
 
 insert into auth.users (id, email)
 values
@@ -57,21 +57,31 @@ select is((select count(*) from public.imports), 1::bigint, 'user A reads only A
 select is((select count(*) from public.raw_records), 1::bigint, 'user A reads only A raw evidence');
 select is((select count(*) from public.transactions), 1::bigint, 'user A reads only A transaction');
 select is((select count(*) from public.allocations), 1::bigint, 'user A reads only A allocation');
+select lives_ok(
+  $$update public.transactions set description_normalized = 'indevido' where id = '56000000-0000-4000-8000-000000000001'$$,
+  'an update targeting user B is accepted but affects no inaccessible row'
+);
+reset role;
 select is(
-  (with changed as (
-    update public.transactions set description_normalized = 'indevido'
-    where id = '56000000-0000-4000-8000-000000000001'
-    returning 1
-  ) select count(*) from changed), 0::bigint,
+  (select description_normalized from public.transactions where id = '56000000-0000-4000-8000-000000000001'),
+  'despesa b',
   'user A cannot update user B transaction'
 );
-select is(
-  (with removed as (
-    delete from public.raw_records where id = '55000000-0000-4000-8000-000000000001'
-    returning 1
-  ) select count(*) from removed), 0::bigint,
+
+set local role authenticated;
+set local "request.jwt.claim.sub" = '40000000-0000-4000-8000-000000000001';
+select lives_ok(
+  $$delete from public.raw_records where id = '55000000-0000-4000-8000-000000000001'$$,
+  'a delete targeting user B is accepted but affects no inaccessible row'
+);
+reset role;
+select ok(
+  exists (select 1 from public.raw_records where id = '55000000-0000-4000-8000-000000000001'),
   'user A cannot delete user B raw evidence'
 );
+
+set local role authenticated;
+set local "request.jwt.claim.sub" = '40000000-0000-4000-8000-000000000001';
 select throws_ok(
   $$update public.raw_records set raw_text = 'alterado' where id = '45000000-0000-4000-8000-000000000001'$$,
   'P0001', 'raw_records are immutable evidence',

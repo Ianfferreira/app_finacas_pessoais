@@ -16,6 +16,8 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
   mensais, acompanhadas de fixtures inteiramente sintéticas.
 - Testes Vitest das regras financeiras iniciais e pgTAP de isolamento/RLS do
   núcleo do domínio.
+- Validação em Supabase local com Docker Desktop: migrations em banco limpo,
+  26 testes pgTAP e regeneração dos tipos TypeScript.
 
 ### Adicionado — Fase 0: Fundação
 

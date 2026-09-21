@@ -24,17 +24,17 @@ package manager configurado, migrations, testes, CI ou exemplo de ambiente.
 
 ## Verificações executadas
 
-| Verificação                           | Resultado                                       |
-| ------------------------------------- | ----------------------------------------------- |
-| Prettier                              | passou                                          |
-| ESLint, zero warnings                 | passou                                          |
-| TypeScript estrito                    | passou                                          |
-| Vitest                                | 3 arquivos, 10 testes passaram                  |
-| Next.js build                         | passou; 4 rotas da aplicação + not-found        |
-| Auditoria de dependências de produção | nenhuma vulnerabilidade conhecida               |
-| Supabase CLI                          | versão 2.117.0 validada                         |
-| Fluxo remoto Auth → perfil            | passou manualmente com Supabase online          |
-| Supabase local / pgTAP                | não executado: Docker e Podman ausentes no host |
+| Verificação                           | Resultado                                |
+| ------------------------------------- | ---------------------------------------- |
+| Prettier                              | passou                                   |
+| ESLint, zero warnings                 | passou                                   |
+| TypeScript estrito                    | passou                                   |
+| Vitest                                | 3 arquivos, 10 testes passaram           |
+| Next.js build                         | passou; 4 rotas da aplicação + not-found |
+| Auditoria de dependências de produção | nenhuma vulnerabilidade conhecida        |
+| Supabase CLI                          | versão 2.117.0 validada                  |
+| Fluxo remoto Auth → perfil            | passou manualmente com Supabase online   |
+| Supabase local / pgTAP                | passou em banco limpo em 2026-09-21      |
 
 ## Escopo deliberadamente não iniciado
 
@@ -42,18 +42,9 @@ Nenhuma tabela ou funcionalidade de contas, cartões, categorias, pessoas,
 importações, registros brutos, transações, rateios, métricas ou dashboard foi
 criada. Storage privado de importações permanece para a etapa correspondente.
 
-## Condição restante para encerramento integral
+## Validação complementar concluída
 
-Em uma máquina com Docker Desktop ou Podman no `PATH`, executar:
-
-```bash
-pnpm db:start
-pnpm db:reset
-pnpm db:test
-pnpm db:types
-pnpm typecheck
-```
-
-O job `database` da CI automatiza a mesma sequência. Até essa execução real, a
-implementação da fundação está pronta, mas o critério de banco limpo + RLS
-executado permanece pendente e não deve ser reportado como aprovado.
+Com Docker Desktop local, a sequência `pnpm db:start`, `pnpm db:reset`,
+`pnpm db:test` e `pnpm db:types` foi executada em 2026-09-21. As migrations
+aplicaram em banco limpo e os testes de RLS passaram. O job `database` da CI
+repete essa sequência automaticamente a cada alteração compatível.
