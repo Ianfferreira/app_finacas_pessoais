@@ -4,6 +4,26 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ## [Unreleased]
 
+### Adicionado — Etapa 4: Naturezas e conciliação básica
+
+- `transaction_links` para relacionar estornos, pagamentos de fatura,
+  transferências próprias, liquidações de terceiros e possíveis duplicidades,
+  sempre entre transações do mesmo usuário.
+- RLS forçada, FKs compostas, proteção contra autorrelação e índices de busca
+  para os vínculos de transação.
+- Confirmação manual da natureza econômica em Movimentações, preservando a
+  proveniência `manual`, a confiança máxima e um lock para essa decisão.
+- Testes de não dupla contagem para pagamento de fatura, transferência,
+  investimento, resgate e estorno; testes pgTAP de isolamento da nova tabela.
+
+### Adicionado — Etapa 3: Primeiro fluxo vertical de importação
+
+- Bucket privado, hash SHA-256, parser CSV Nubank, preview e confirmação de
+  importação de extratos.
+- Arquivo e linhas brutas auditáveis, interpretação inicial de transações e
+  proteção contra importação duplicada do mesmo conteúdo.
+- Tela de Movimentações para consultar os registros importados.
+
 ### Adicionado — Fase 1: Núcleo do domínio
 
 - Migration forward-only para instituições, categorias, subcategorias, pessoas,

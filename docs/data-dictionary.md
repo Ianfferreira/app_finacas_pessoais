@@ -20,11 +20,10 @@ RLS está habilitada e forçada. O papel `authenticated` possui políticas
 separadas de `select`, `insert`, `update` e `delete`, todas limitadas a
 `auth.uid() = user_id`. O papel `anon` não possui acesso à tabela.
 
-## Núcleo financeiro — Fase 1
+## Núcleo financeiro — Fases 1 a 4
 
-As entidades a seguir foram adicionadas na migration
-`20260921110000_create_financial_domain.sql`. Elas ainda não possuem tela nem
-upload: são a base segura para os próximos fluxos verticais.
+As entidades a seguir formam o núcleo e os incrementos de importação e
+conciliação já implementados. O schema não pressupõe dados pessoais de seed.
 
 | Entidade                      | Papel                                                                                                                         |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -32,13 +31,31 @@ upload: são a base segura para os próximos fluxos verticais.
 | `categories`, `subcategories` | Taxonomia editável e isolada por usuário; perfil novo recebe as 16 categorias iniciais e subcategorias de gasto documentadas. |
 | `people`                      | Pessoas de terceiros, separadas de categorias.                                                                                |
 | `accounts`, `cards`           | Cadastros financeiros isolados por usuário; cartão pode apontar para uma conta de pagamento do mesmo dono.                    |
-| `imports`                     | Metadados e hash de um arquivo; o binário/Storage ainda virá na fase de upload.                                               |
+| `imports`                     | Metadados, hash SHA-256 e caminho privado do arquivo importado.                                                               |
 | `raw_records`                 | Evidência imutável de registros de uma importação. Não pode ser atualizada nem excluída, nem pelo dono.                       |
 | `transactions`                | Interpretação normalizada/editável de um registro bruto, com competência, natureza, categoria, proveniência e locks manuais.  |
 | `allocations`                 | Titularidade por transação: titular ou terceiro. A soma deve ser exatamente o valor da transação.                             |
+| `transaction_links`           | Vínculo entre duas transações do mesmo usuário, com tipo, valor, status de revisão e confirmação do usuário.                  |
 
 Dinheiro é `numeric(18,2)` no banco e nunca `float`. Datas econômicas usam
 `date`; competência é sempre o primeiro dia do mês. Todas as tabelas do usuário
 têm `user_id`, RLS forçada e políticas separadas de leitura, criação, alteração
 e exclusão. FKs compostas impedem uma linha de um usuário apontar para a linha
 de outro.
+
+O arquivo associado a uma importação fica no bucket privado
+`financial-imports`; sua primeira pasta é o UUID do dono. A política de Storage
+usa esse segmento para isolar leitura, upload, atualização e exclusão.
+
+## `public.transaction_links`
+
+Criada em `20260921170000_create_transaction_links.sql`, esta tabela guarda
+conciliações sem alterar o dado bruto. `from_transaction_id` e
+`to_transaction_id` apontam, por FKs compostas, para transações do mesmo
+`user_id`; uma transação não pode ser vinculada a ela mesma. `link_type` pode
+ser `reversal_of`, `pays_statement`, `own_transfer_pair`,
+`settles_third_party`, `duplicate_of` ou `related`.
+
+O `amount` usa `numeric(18,2)`, `status` usa o ciclo de revisão existente e
+`confirmed_by_user` registra a confirmação explícita. Há índices para busca
+pelas duas pontas do vínculo e RLS forçada em todas as operações.

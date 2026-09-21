@@ -493,6 +493,57 @@ export type Database = {
           },
         ]
       }
+      transaction_links: {
+        Row: {
+          amount: number
+          confirmed_by_user: boolean
+          created_at: string
+          from_transaction_id: string
+          id: string
+          link_type: Database["public"]["Enums"]["link_type"]
+          status: Database["public"]["Enums"]["review_status"]
+          to_transaction_id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          confirmed_by_user?: boolean
+          created_at?: string
+          from_transaction_id: string
+          id?: string
+          link_type: Database["public"]["Enums"]["link_type"]
+          status?: Database["public"]["Enums"]["review_status"]
+          to_transaction_id: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          confirmed_by_user?: boolean
+          created_at?: string
+          from_transaction_id?: string
+          id?: string
+          link_type?: Database["public"]["Enums"]["link_type"]
+          status?: Database["public"]["Enums"]["review_status"]
+          to_transaction_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_links_from_transaction_id_user_id_fkey"
+            columns: ["from_transaction_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id", "user_id"]
+          },
+          {
+            foreignKeyName: "transaction_links_to_transaction_id_user_id_fkey"
+            columns: ["to_transaction_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
       transactions: {
         Row: {
           account_id: string | null
@@ -702,6 +753,13 @@ export type Database = {
         | "partial"
         | "failed"
         | "duplicate"
+      link_type:
+        | "reversal_of"
+        | "pays_statement"
+        | "own_transfer_pair"
+        | "settles_third_party"
+        | "duplicate_of"
+        | "related"
       owner_type: "self" | "third_party"
       parse_status: "pending" | "parsed" | "ignored" | "failed"
       review_status: "pending" | "suggested" | "confirmed" | "not_required"
@@ -879,6 +937,14 @@ export const Constants = {
         "partial",
         "failed",
         "duplicate",
+      ],
+      link_type: [
+        "reversal_of",
+        "pays_statement",
+        "own_transfer_pair",
+        "settles_third_party",
+        "duplicate_of",
+        "related",
       ],
       owner_type: ["self", "third_party"],
       parse_status: ["pending", "parsed", "ignored", "failed"],

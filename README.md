@@ -1,8 +1,10 @@
 # Finanças Pessoais
 
 Aplicação web de inteligência financeira pessoal definida em `MASTER_SPEC.md`.
-O repositório concluiu a fundação e possui o núcleo de domínio financeiro
-versionado. Ainda não há upload, parser ou dashboard de produto.
+O repositório possui fundação segura, núcleo financeiro auditável e o primeiro
+fluxo vertical: importação de extrato CSV Nubank, armazenamento privado,
+evidência imutável e listagem de movimentações. A interface também permite
+confirmar manualmente a natureza econômica de uma movimentação.
 
 ## Pré-requisitos
 
@@ -76,11 +78,18 @@ Nunca exponha `service_role` no cliente nem a registre em variáveis com prefixo
 
 ## Banco e segurança
 
-A migration inicial cria apenas `public.profiles` e um perfil 1:1 para cada
-identidade do Supabase Auth. A tabela possui RLS forçada e políticas explícitas
-para `select`, `insert`, `update` e `delete`. Um teste com usuários sintéticos A
-e B confirma que nenhum deles lê ou altera o perfil do outro; requisições
-anônimas não leem perfis.
+Cada tabela de dados do usuário possui RLS habilitada e forçada, com políticas
+explícitas por operação. O fluxo de importação armazena o arquivo no bucket
+privado `financial-imports`, sob um caminho iniciado pelo UUID de seu dono; a
+mesma pessoa não consegue enviar novamente um conteúdo de mesmo SHA-256. O
+arquivo e os `raw_records` são evidências imutáveis; `transactions` e
+`allocations` são a interpretação editável.
+
+`transaction_links` registra conciliações entre duas transações do mesmo
+usuário — estorno, pagamento de fatura, transferência própria, liquidação de
+terceiro, duplicidade ou relação genérica. A confirmação de natureza na tela de
+Movimentações é manual e grava a proveniência e o lock dessa decisão; não cria
+classificações automáticas.
 
 Mudanças estruturais futuras devem ser novas migrations forward-only. Depois de
 qualquer migration, execute `pnpm db:reset`, `pnpm db:test` e `pnpm db:types`.

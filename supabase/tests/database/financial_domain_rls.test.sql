@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(14);
+select plan(18);
 
 insert into auth.users (id, email)
 values
@@ -39,12 +39,21 @@ values
 insert into public.transactions (id, user_id, raw_record_id, import_id, account_id, competence_month, description_raw, description_normalized, amount, direction, nature, category_id, dedupe_key)
 values
   ('46000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000001', '45000000-0000-4000-8000-000000000001', '44000000-0000-4000-8000-000000000001', '43000000-0000-4000-8000-000000000001', '2026-08-01', 'Despesa A', 'despesa a', 10.00, 'outflow', 'expense', '41000000-0000-4000-8000-000000000001', 'synthetic-a'),
-  ('56000000-0000-4000-8000-000000000001', '50000000-0000-4000-8000-000000000002', '55000000-0000-4000-8000-000000000001', '54000000-0000-4000-8000-000000000001', '53000000-0000-4000-8000-000000000001', '2026-08-01', 'Despesa B', 'despesa b', 20.00, 'outflow', 'expense', '51000000-0000-4000-8000-000000000001', 'synthetic-b');
+  ('46100000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000001', '45000000-0000-4000-8000-000000000001', '44000000-0000-4000-8000-000000000001', '43000000-0000-4000-8000-000000000001', '2026-08-01', 'Crédito A', 'crédito a', 10.00, 'inflow', 'reversal', '41000000-0000-4000-8000-000000000001', 'synthetic-a-reversal'),
+  ('56000000-0000-4000-8000-000000000001', '50000000-0000-4000-8000-000000000002', '55000000-0000-4000-8000-000000000001', '54000000-0000-4000-8000-000000000001', '53000000-0000-4000-8000-000000000001', '2026-08-01', 'Despesa B', 'despesa b', 20.00, 'outflow', 'expense', '51000000-0000-4000-8000-000000000001', 'synthetic-b'),
+  ('56100000-0000-4000-8000-000000000001', '50000000-0000-4000-8000-000000000002', '55000000-0000-4000-8000-000000000001', '54000000-0000-4000-8000-000000000001', '53000000-0000-4000-8000-000000000001', '2026-08-01', 'Crédito B', 'crédito b', 20.00, 'inflow', 'reversal', '51000000-0000-4000-8000-000000000001', 'synthetic-b-reversal');
 
 insert into public.allocations (user_id, transaction_id, owner_type, amount)
 values
   ('40000000-0000-4000-8000-000000000001', '46000000-0000-4000-8000-000000000001', 'self', 10.00),
-  ('50000000-0000-4000-8000-000000000002', '56000000-0000-4000-8000-000000000001', 'self', 20.00);
+  ('40000000-0000-4000-8000-000000000001', '46100000-0000-4000-8000-000000000001', 'self', 10.00),
+  ('50000000-0000-4000-8000-000000000002', '56000000-0000-4000-8000-000000000001', 'self', 20.00),
+  ('50000000-0000-4000-8000-000000000002', '56100000-0000-4000-8000-000000000001', 'self', 20.00);
+
+insert into public.transaction_links (id, user_id, from_transaction_id, to_transaction_id, link_type, amount)
+values
+  ('47000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000001', '46000000-0000-4000-8000-000000000001', '46100000-0000-4000-8000-000000000001', 'reversal_of', 10.00),
+  ('57000000-0000-4000-8000-000000000001', '50000000-0000-4000-8000-000000000002', '56000000-0000-4000-8000-000000000001', '56100000-0000-4000-8000-000000000001', 'reversal_of', 20.00);
 
 set local role authenticated;
 set local "request.jwt.claim.sub" = '40000000-0000-4000-8000-000000000001';
@@ -55,8 +64,22 @@ select is((select count(*) from public.people), 1::bigint, 'user A reads only A 
 select is((select count(*) from public.accounts), 1::bigint, 'user A reads only A account');
 select is((select count(*) from public.imports), 1::bigint, 'user A reads only A import');
 select is((select count(*) from public.raw_records), 1::bigint, 'user A reads only A raw evidence');
-select is((select count(*) from public.transactions), 1::bigint, 'user A reads only A transaction');
-select is((select count(*) from public.allocations), 1::bigint, 'user A reads only A allocation');
+select is((select count(*) from public.transactions), 2::bigint, 'user A reads only A transactions');
+select is((select count(*) from public.allocations), 2::bigint, 'user A reads only A allocations');
+select is((select count(*) from public.transaction_links), 1::bigint, 'user A reads only A transaction link');
+select lives_ok(
+  $$update public.transaction_links set status = 'confirmed' where id = '57000000-0000-4000-8000-000000000001'$$,
+  'an update targeting user B link is accepted but affects no inaccessible row'
+);
+select throws_ok(
+  $$insert into public.transaction_links (user_id, from_transaction_id, to_transaction_id, link_type, amount) values ('50000000-0000-4000-8000-000000000002', '46000000-0000-4000-8000-000000000001', '46100000-0000-4000-8000-000000000001', 'related', 0.00)$$,
+  '42501', null,
+  'user A cannot insert a transaction link owned by user B'
+);
+select lives_ok(
+  $$delete from public.transaction_links where id = '57000000-0000-4000-8000-000000000001'$$,
+  'a delete targeting user B link is accepted but affects no inaccessible row'
+);
 select lives_ok(
   $$update public.transactions set description_normalized = 'indevido' where id = '56000000-0000-4000-8000-000000000001'$$,
   'an update targeting user B is accepted but affects no inaccessible row'
