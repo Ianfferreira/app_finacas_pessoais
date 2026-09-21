@@ -49,7 +49,7 @@ values
 set local role authenticated;
 set local "request.jwt.claim.sub" = '40000000-0000-4000-8000-000000000001';
 
-select is((select count(*) from public.institutions), 1::bigint, 'authenticated user can read the global institution catalog');
+select is((select count(*) from public.institutions), 2::bigint, 'authenticated user can read the global institution catalog');
 select is((select count(*) from public.categories), 17::bigint, 'user A reads only their 16 seeded categories plus one custom category');
 select is((select count(*) from public.people), 1::bigint, 'user A reads only A person');
 select is((select count(*) from public.accounts), 1::bigint, 'user A reads only A account');

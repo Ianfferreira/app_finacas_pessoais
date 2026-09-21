@@ -644,6 +644,16 @@ export type Database = {
         Args: { target_transaction_id: string; target_user_id: string }
         Returns: undefined
       }
+      import_nubank_statement_csv: {
+        Args: {
+          p_filename: string
+          p_rows: Json
+          p_sha256: string
+          p_size_bytes: number
+          p_storage_path: string
+        }
+        Returns: string
+      }
       seed_default_categories: {
         Args: { target_user_id: string }
         Returns: undefined
@@ -878,3 +888,4 @@ export const Constants = {
     },
   },
 } as const
+

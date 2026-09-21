@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
 
@@ -55,6 +56,9 @@ export default async function DashboardPage() {
             Sair
           </button>
         </form>
+        <Link className="button primary" href="/imports">
+          Importar CSV Nubank
+        </Link>
       </section>
     </main>
   );
