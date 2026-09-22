@@ -25,6 +25,9 @@ export default async function MovementsPage({
         </Link>
         <p className="eyebrow">Movimentações</p>
         <h1>Registros importados</h1>
+        <Link className="button secondary" href="/review">
+          Abrir revisão
+        </Link>
         {success ? <p className="notice success">{success}</p> : null}
         {error ? (
           <p className="notice error" role="alert">

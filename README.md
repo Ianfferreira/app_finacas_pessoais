@@ -97,6 +97,23 @@ Como os tipos do Supabase refletem o banco aplicado, após aplicar a migration
 financeira no projeto online também será necessário regenerá-los num Supabase
 local ou conectado; nenhuma chave administrativa é guardada neste repositório.
 
+## Implementação local em andamento
+
+Além do CSV Nubank, o ambiente local possui adapters explícitos para extrato
+Nubank PDF, fatura Nubank PDF, Caixa PDF, Inter PDF e Rico/XP CSV. Cada arquivo
+é pré-visualizado, recebe hash SHA-256, fica privado no Storage e é persistido
+atomicamente com evidência bruta, movimentos, cartões, faturas e parcelas
+futuras. Pagamento de fatura permanece `card_payment`, portanto não é somado
+como gasto novo.
+
+O esquema local também inclui merchants/aliases, regras classificatórias com a
+precedência documentada, pendências de revisão independentes, locks manuais e
+trilha de auditoria. Pessoas, rateios exatos em centavos, razão de terceiros,
+liquidações, alocações futuras de parcelas e fechamento mensal versionado estão
+modelados e protegidos por RLS. As migrations a partir de
+`20260921180000` foram validadas apenas no Supabase local e ainda **não** devem
+ser aplicadas ao projeto online até o marco integrado final.
+
 ## CI
 
 `.github/workflows/quality.yml` executa formatação, lint, typecheck, testes e

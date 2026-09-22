@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(18);
+select plan(21);
 
 insert into auth.users (id, email)
 values
@@ -25,6 +25,11 @@ insert into public.accounts (id, user_id, institution_id, name, type)
 values
   ('43000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000001', '60000000-0000-4000-8000-000000000001', 'Conta A', 'checking'),
   ('53000000-0000-4000-8000-000000000001', '50000000-0000-4000-8000-000000000002', '60000000-0000-4000-8000-000000000001', 'Conta B', 'checking');
+
+insert into public.cards (id, user_id, institution_id, name, last_four)
+values
+  ('43500000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000001', '60000000-0000-4000-8000-000000000001', 'Cartão A', '1111'),
+  ('53500000-0000-4000-8000-000000000001', '50000000-0000-4000-8000-000000000002', '60000000-0000-4000-8000-000000000001', 'Cartão B', '2222');
 
 insert into public.imports (id, user_id, account_id, original_filename, mime_type, size_bytes, sha256, source_kind, format, parser_name, parser_version)
 values
@@ -55,10 +60,25 @@ values
   ('47000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000001', '46000000-0000-4000-8000-000000000001', '46100000-0000-4000-8000-000000000001', 'reversal_of', 10.00),
   ('57000000-0000-4000-8000-000000000001', '50000000-0000-4000-8000-000000000002', '56000000-0000-4000-8000-000000000001', '56100000-0000-4000-8000-000000000001', 'reversal_of', 20.00);
 
+insert into public.card_statements (id, user_id, import_id, card_id, cycle_end, status)
+values
+  ('47500000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000001', '44000000-0000-4000-8000-000000000001', '43500000-0000-4000-8000-000000000001', '2026-08-31', 'processed'),
+  ('57500000-0000-4000-8000-000000000001', '50000000-0000-4000-8000-000000000002', '54000000-0000-4000-8000-000000000001', '53500000-0000-4000-8000-000000000001', '2026-08-31', 'processed');
+
+insert into public.installment_groups (id, user_id, card_id, source_group_key, description, total_installments)
+values
+  ('47600000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000001', '43500000-0000-4000-8000-000000000001', 'a-example-2-3', 'Compra sintética A', 3),
+  ('57600000-0000-4000-8000-000000000001', '50000000-0000-4000-8000-000000000002', '53500000-0000-4000-8000-000000000001', 'b-example-2-3', 'Compra sintética B', 3);
+
+insert into public.installments (user_id, installment_group_id, transaction_id, installment_number, competence_month, amount, status)
+values
+  ('40000000-0000-4000-8000-000000000001', '47600000-0000-4000-8000-000000000001', '46000000-0000-4000-8000-000000000001', 2, '2026-08-01', 10.00, 'realized'),
+  ('50000000-0000-4000-8000-000000000002', '57600000-0000-4000-8000-000000000001', '56000000-0000-4000-8000-000000000001', 2, '2026-08-01', 20.00, 'realized');
+
 set local role authenticated;
 set local "request.jwt.claim.sub" = '40000000-0000-4000-8000-000000000001';
 
-select is((select count(*) from public.institutions), 2::bigint, 'authenticated user can read the global institution catalog');
+select is((select count(*) from public.institutions), 5::bigint, 'authenticated user can read the global institution catalog');
 select is((select count(*) from public.categories), 17::bigint, 'user A reads only their 16 seeded categories plus one custom category');
 select is((select count(*) from public.people), 1::bigint, 'user A reads only A person');
 select is((select count(*) from public.accounts), 1::bigint, 'user A reads only A account');
@@ -67,6 +87,9 @@ select is((select count(*) from public.raw_records), 1::bigint, 'user A reads on
 select is((select count(*) from public.transactions), 2::bigint, 'user A reads only A transactions');
 select is((select count(*) from public.allocations), 2::bigint, 'user A reads only A allocations');
 select is((select count(*) from public.transaction_links), 1::bigint, 'user A reads only A transaction link');
+select is((select count(*) from public.card_statements), 1::bigint, 'user A reads only A card statement');
+select is((select count(*) from public.installment_groups), 1::bigint, 'user A reads only A installment group');
+select is((select count(*) from public.installments), 1::bigint, 'user A reads only A installment');
 select lives_ok(
   $$update public.transaction_links set status = 'confirmed' where id = '57000000-0000-4000-8000-000000000001'$$,
   'an update targeting user B link is accepted but affects no inaccessible row'
