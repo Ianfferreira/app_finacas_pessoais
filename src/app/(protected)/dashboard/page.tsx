@@ -5,6 +5,10 @@ import {
   buildCategoryBreakdown,
   movementsDrilldownHref,
 } from "@/features/dashboard/category-breakdown";
+import {
+  type DashboardMetric,
+  FinanceDashboard,
+} from "@/features/dashboard/terra-dashboard";
 import { createClient } from "@/lib/supabase/server";
 
 import { closeCurrentMonth, reopenCurrentMonth, signOut } from "./actions";
@@ -14,12 +18,18 @@ const formatCurrency = new Intl.NumberFormat("pt-BR", {
   currency: "BRL",
 });
 
+const formatMonth = new Intl.DateTimeFormat("pt-BR", {
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+const MONTH = /^(\d{4})-(0[1-9]|1[0-2])$/;
+
 function currentMonth() {
   const today = new Date();
   return `${today.getUTCFullYear()}-${String(today.getUTCMonth() + 1).padStart(2, "0")}-01`;
 }
-
-const MONTH = /^(\d{4})-(0[1-9]|1[0-2])$/;
 
 function monthFromSearchParam(value: string | undefined): string {
   if (!value || !MONTH.test(value)) return currentMonth();
@@ -30,6 +40,12 @@ function shiftMonth(month: string, offset: number): string {
   const [year, value] = month.slice(0, 7).split("-").map(Number);
   const shifted = new Date(Date.UTC(year, value - 1 + offset, 1));
   return `${shifted.getUTCFullYear()}-${String(shifted.getUTCMonth() + 1).padStart(2, "0")}`;
+}
+
+function closingLabel(status: string | null | undefined): string {
+  if (status === "closed") return "Fechado";
+  if (status === "closed_with_pending") return "Fechado com pendências";
+  return "Em andamento";
 }
 
 export default async function DashboardPage({
@@ -78,172 +94,119 @@ export default async function DashboardPage({
 
   const income = metrics?.income ?? 0;
   const expenses = metrics?.personal_expenses ?? 0;
+  const result = income - expenses;
+  const consumed =
+    income > 0
+      ? `${((expenses / income) * 100).toFixed(1).replace(".", ",")}%`
+      : "Não aplicável";
   const categoryBreakdown = buildCategoryBreakdown(
     categoryMetrics ?? [],
     categories ?? [],
   );
-  const insights = categoryBreakdown.categorized.slice(0, 3);
+  const isPreliminary = closing?.status !== "closed";
+  const currentClosingLabel = closingLabel(closing?.status);
+  const pendingCount = review.count ?? 0;
+  const monthLabel = formatMonth.format(new Date(`${month}T00:00:00Z`));
+  const metricDetail = isPreliminary
+    ? "Valor sujeito às pendências do mês."
+    : "Valor consolidado no fechamento.";
+
+  const dashboardMetrics: DashboardMetric[] = [
+    {
+      label: "Receitas",
+      value: formatCurrency.format(income),
+      detail: metricDetail,
+      href: movementsDrilldownHref(month),
+      actionLabel: "Ver composição",
+    },
+    {
+      label: "Gastos pessoais",
+      value: formatCurrency.format(expenses),
+      detail: metricDetail,
+      href: movementsDrilldownHref(month),
+      actionLabel: "Ver movimentações",
+    },
+    {
+      label: "Resultado",
+      value: formatCurrency.format(result),
+      detail: "Receitas menos gastos pessoais.",
+      href: movementsDrilldownHref(month),
+      actionLabel: "Ver cálculo",
+      featured: true,
+    },
+    {
+      label: "Renda consumida",
+      value: consumed,
+      detail:
+        income > 0
+          ? "Gastos pessoais sobre receitas."
+          : "Exibido somente com receitas positivas.",
+      href: movementsDrilldownHref(month),
+      actionLabel: "Entender indicador",
+    },
+  ];
+
+  const statusMessage = error ? (
+    <p className="notice error" role="alert">
+      {error}
+    </p>
+  ) : success ? (
+    <p className="notice success" role="status">
+      {success}
+    </p>
+  ) : null;
+
+  const footerActions = (
+    <div className="terra-footer-actions">
+      <Link className="button secondary" href="/movements">
+        Movimentações
+      </Link>
+      <Link className="button secondary" href="/review">
+        Revisão
+      </Link>
+      <Link className="button secondary" href="/history">
+        Histórico
+      </Link>
+      {closing?.status === "in_progress" || !closing ? (
+        <form action={closeCurrentMonth}>
+          <input name="month" type="hidden" value={month} />
+          <button className="button secondary" type="submit">
+            Fechar {monthKey}
+          </button>
+        </form>
+      ) : (
+        <form action={reopenCurrentMonth}>
+          <input name="month" type="hidden" value={month} />
+          <button className="button secondary" type="submit">
+            Reabrir {monthKey}
+          </button>
+        </form>
+      )}
+      <form action={signOut}>
+        <button className="button secondary" type="submit">
+          Sair
+        </button>
+      </form>
+    </div>
+  );
 
   return (
-    <main className="centered-page">
-      <section className="card profile-card">
-        <p className="eyebrow">Visão geral</p>
-        <h1>
-          {profile?.display_name ? `Olá, ${profile.display_name}` : "Seu mês"}
-        </h1>
-        <p className="muted">
-          Competência {month.slice(0, 7)}. Valores permanecem preliminares
-          enquanto existirem pendências de revisão.
-        </p>
-        <p className="month-navigation" aria-label="Navegação entre meses">
-          <Link href={`/dashboard?month=${shiftMonth(month, -1)}`}>
-            ← Mês anterior
-          </Link>
-          <Link href={`/dashboard?month=${shiftMonth(month, 1)}`}>
-            Próximo mês →
-          </Link>
-        </p>
-        {error ? <p className="notice error">{error}</p> : null}
-        {success ? <p className="notice success">{success}</p> : null}
-        <dl className="profile-grid">
-          <div>
-            <dt>Receitas</dt>
-            <dd>{formatCurrency.format(income)}</dd>
-          </div>
-          <div>
-            <dt>Gastos pessoais</dt>
-            <dd>{formatCurrency.format(expenses)}</dd>
-          </div>
-          <div>
-            <dt>Resultado</dt>
-            <dd>{formatCurrency.format(income - expenses)}</dd>
-          </div>
-          <div>
-            <dt>Renda consumida</dt>
-            <dd>
-              {income
-                ? `${((expenses / income) * 100).toFixed(1)}%`
-                : "Sem base válida"}
-            </dd>
-          </div>
-          <div>
-            <dt>Pendências</dt>
-            <dd>{review.count ?? 0}</dd>
-          </div>
-          <div>
-            <dt>Fechamento</dt>
-            <dd>
-              {closing
-                ? `${closing.status} · v${closing.version}`
-                : "em andamento"}
-            </dd>
-          </div>
-        </dl>
-        <section aria-labelledby="category-breakdown-heading">
-          <h2 id="category-breakdown-heading">Para onde foi meu dinheiro?</h2>
-          <p className="muted">
-            Percentuais usam somente o total já categorizado. Cada linha abre as
-            movimentações que formam o valor.
-          </p>
-          {categoryBreakdown.categorized.length ? (
-            <ul className="category-breakdown">
-              {categoryBreakdown.categorized.map((category) => (
-                <li key={category.category_id ?? category.category_name}>
-                  <Link
-                    href={movementsDrilldownHref(month, category.category_id)}
-                  >
-                    <strong>{category.category_name}</strong>
-                    <span>
-                      {formatCurrency.format(category.personal_expenses)}
-                      {category.percentage_of_categorized !== null
-                        ? ` · ${category.percentage_of_categorized.toFixed(1)}%`
-                        : " · sem base percentual"}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="muted">Ainda não há gastos pessoais categorizados.</p>
-          )}
-          {categoryBreakdown.uncategorized ? (
-            <p className="notice review-notice">
-              A revisar:{" "}
-              {formatCurrency.format(
-                categoryBreakdown.uncategorized.personal_expenses,
-              )}
-              {expenses > 0
-                ? ` · ${((categoryBreakdown.uncategorized.personal_expenses / expenses) * 100).toFixed(1)}% dos gastos pessoais capturados`
-                : ""}
-              .{" "}
-              <Link href={movementsDrilldownHref(month)}>
-                Ver movimentações
-              </Link>
-            </p>
-          ) : null}
-        </section>
-        <h2>Insights factuais</h2>
-        <ul>
-          {insights.length ? (
-            insights.map((category) => (
-              <li key={category.category_id ?? category.category_name}>
-                {category.category_name}:{" "}
-                {formatCurrency.format(category.personal_expenses)}
-                {category.percentage_of_categorized !== null
-                  ? ` (${category.percentage_of_categorized.toFixed(1)}% do categorizado)`
-                  : ""}
-              </li>
-            ))
-          ) : (
-            <li className="muted">
-              Ainda não há gastos pessoais classificados.
-            </li>
-          )}
-        </ul>
-        <div className="stack">
-          <Link className="button primary" href="/imports">
-            Importar arquivos
-          </Link>
-          <Link className="button secondary" href="/movements">
-            Movimentações
-          </Link>
-          <Link className="button secondary" href="/review">
-            Revisão
-          </Link>
-          <Link className="button secondary" href="/history">
-            Histórico
-          </Link>
-          <Link className="button secondary" href="/commitments">
-            Compromissos
-          </Link>
-          <Link className="button secondary" href="/settings">
-            Configurações
-          </Link>
-          <Link className="button secondary" href="/third-parties">
-            Terceiros e reembolsos
-          </Link>
-          {closing?.status === "in_progress" || !closing ? (
-            <form action={closeCurrentMonth}>
-              <input name="month" type="hidden" value={month} />
-              <button className="button secondary" type="submit">
-                Fechar {monthKey}
-              </button>
-            </form>
-          ) : (
-            <form action={reopenCurrentMonth}>
-              <input name="month" type="hidden" value={month} />
-              <button className="button secondary" type="submit">
-                Reabrir {monthKey}
-              </button>
-            </form>
-          )}
-          <form action={signOut}>
-            <button className="button secondary" type="submit">
-              Sair
-            </button>
-          </form>
-        </div>
-      </section>
-    </main>
+    <FinanceDashboard
+      categoryBreakdown={categoryBreakdown}
+      closingLabel={currentClosingLabel}
+      footerActions={footerActions}
+      isPreliminary={isPreliminary}
+      metrics={dashboardMetrics}
+      month={month}
+      monthLabel={monthLabel}
+      navigation={{
+        previous: `/dashboard?month=${shiftMonth(month, -1)}`,
+        next: `/dashboard?month=${shiftMonth(month, 1)}`,
+      }}
+      pendingCount={pendingCount}
+      personalExpenses={expenses}
+      personName={profile?.display_name}
+      statusMessage={statusMessage}
+    />
   );
 }

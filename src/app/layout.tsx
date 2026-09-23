@@ -5,7 +5,7 @@ import "./styles.css";
 
 export const metadata: Metadata = {
   title: "Finanças pessoais",
-  description: "Fundação segura da aplicação de finanças pessoais.",
+  description: "Inteligência financeira pessoal, calma e auditável.",
 };
 
 export default function RootLayout({

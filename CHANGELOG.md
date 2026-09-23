@@ -4,6 +4,14 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ## [Unreleased]
 
+### Alterado
+
+- A Visão Geral passou a usar o design system Terra: superfícies neutras
+  quentes, verde-floresta como cor principal, tipografia editorial seletiva e
+  componentes responsivos para qualidade, métricas, categorias e insights.
+- A direção visual documentada agora adota Nunito Sans, Literata e a paleta
+  Terra, mantendo o ocre e o vermelho para estados semânticos específicos.
+
 ### Corrigido
 
 - O parser CSV Nubank agora aceita valores com vírgula decimal, ponto decimal

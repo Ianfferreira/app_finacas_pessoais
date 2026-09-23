@@ -1,16 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,600;7..72,700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700&display=swap");
+
 :root {
   color-scheme: light;
-  --background: #f5f7fa;
+  --background: #f8f5ef;
   --surface: #ffffff;
-  --text: #18202f;
-  --muted: #5f6b7a;
-  --border: #dde3ea;
-  --primary: #3759c7;
-  --primary-hover: #2946a7;
-  --danger-bg: #fff1f1;
-  --danger-text: #9d2020;
-  --success-bg: #edf9f1;
-  --success-text: #246b3d;
+  --surface-soft: #f1eee7;
+  --surface-accent: #edf4ef;
+  --text: #252b27;
+  --muted: #626a64;
+  --border: #dfe3dc;
+  --border-strong: #c9d0c8;
+  --primary: #3f6f4c;
+  --primary-hover: #2d5538;
+  --primary-soft: #dcecdf;
+  --danger-bg: #f7e5e1;
+  --danger-text: #9f4339;
+  --success-bg: #e7f1e9;
+  --success-text: #2d5538;
+  --warning-bg: #fbf0d1;
+  --warning-text: #7a5a19;
 }
 
 * {
@@ -22,14 +30,7 @@ body {
   background: var(--background);
   color: var(--text);
   font-family:
-    Inter,
-    Geist,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+    "Nunito Sans", Inter, Geist, ui-sans-serif, system-ui, sans-serif;
 }
 
 button,
@@ -140,7 +141,7 @@ input:focus-visible,
 select:focus-visible,
 .button:focus-visible,
 .back-link:focus-visible {
-  outline: 3px solid rgba(55, 89, 199, 0.32);
+  outline: 3px solid color-mix(in srgb, var(--primary) 40%, transparent);
   outline-offset: 2px;
 }
 
@@ -345,5 +346,592 @@ select:focus-visible,
 @media (prefers-reduced-motion: reduce) {
   .skeleton {
     animation: none;
+  }
+}
+
+.terra-app-shell {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: 14.25rem minmax(0, 1fr);
+  background: var(--background);
+}
+
+.terra-sidebar {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  background: #fdfcf9;
+  padding: 1.5rem 1rem 1rem;
+}
+
+.terra-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 2.75rem;
+  padding: 0 0.5rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.terra-brand-mark {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 0.75rem;
+  background: var(--primary);
+  color: white;
+}
+
+.terra-brand strong,
+.terra-brand small {
+  display: block;
+}
+
+.terra-brand strong {
+  font-size: 0.95rem;
+}
+
+.terra-brand small {
+  margin-top: 0.08rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.terra-navigation {
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 2rem;
+}
+
+.terra-navigation a,
+.terra-settings-link {
+  display: flex;
+  align-items: center;
+  min-height: 2.6rem;
+  border-radius: 0.625rem;
+  padding: 0.55rem 0.7rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.terra-navigation a:hover,
+.terra-settings-link:hover {
+  background: var(--surface-soft);
+  color: var(--text);
+}
+
+.terra-navigation a[aria-current="page"] {
+  background: var(--primary-soft);
+  color: var(--primary-hover);
+}
+
+.terra-settings-link {
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  padding-top: 1rem;
+}
+
+.terra-dashboard-main {
+  min-width: 0;
+}
+
+.terra-topbar {
+  display: flex;
+  min-height: 4.125rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  background: rgb(255 255 255 / 92%);
+  padding: 0.7rem clamp(1rem, 3vw, 2rem);
+}
+
+.terra-month-navigation,
+.terra-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.terra-month-navigation a {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border-radius: 0.6rem;
+  color: var(--text);
+  font-size: 1.15rem;
+  text-decoration: none;
+}
+
+.terra-month-navigation a:hover {
+  background: var(--surface-soft);
+}
+
+.terra-month-navigation span {
+  min-width: 9.25rem;
+  text-align: center;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.terra-status {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-hover);
+  padding: 0.3rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.terra-status.is-preliminary {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.terra-dashboard-content {
+  display: grid;
+  gap: 1.4rem;
+  max-width: 96rem;
+  margin: 0 auto;
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.terra-dashboard-intro .eyebrow {
+  margin-bottom: 0.35rem;
+}
+
+.terra-dashboard-intro h1 {
+  margin: 0;
+  font-family: Literata, Georgia, serif;
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.terra-dashboard-intro > p:last-child {
+  max-width: 42rem;
+  margin: 0.45rem 0 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.terra-quality-bar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-radius: 0.875rem;
+  background: var(--surface-accent);
+  padding: 0.85rem 1rem;
+}
+
+.terra-quality-bar div {
+  min-width: 0;
+  border-left: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+  padding: 0 0.85rem;
+}
+
+.terra-quality-bar div:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+
+.terra-quality-bar span,
+.terra-quality-bar strong {
+  display: block;
+}
+
+.terra-quality-bar span {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.terra-quality-bar strong {
+  margin-top: 0.08rem;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.terra-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.terra-metric-card,
+.terra-panel {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--surface);
+}
+
+.terra-metric-card {
+  display: flex;
+  min-height: 10.25rem;
+  flex-direction: column;
+  padding: 1.2rem;
+}
+
+.terra-metric-card.is-featured {
+  border-color: var(--primary-hover);
+  background: var(--primary-hover);
+  color: white;
+}
+
+.terra-metric-label {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.is-featured .terra-metric-label,
+.is-featured .terra-metric-detail {
+  color: rgb(255 255 255 / 80%);
+}
+
+.terra-metric-value {
+  margin: 1rem 0 0.25rem;
+  font-size: clamp(1.55rem, 3vw, 2rem);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+
+.terra-metric-detail {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.terra-inline-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.is-featured .terra-inline-link {
+  color: white;
+}
+
+.terra-inline-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
+
+.terra-dashboard-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(16rem, 0.8fr);
+  gap: 1rem;
+}
+
+.terra-panel {
+  min-width: 0;
+  padding: 1.25rem;
+}
+
+.terra-panel-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.terra-panel h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.terra-panel-heading p,
+.terra-compact-panel p {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.terra-panel-total {
+  flex: 0 0 auto;
+  color: var(--text) !important;
+  font-size: 0.85rem !important;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  text-align: right;
+}
+
+.terra-panel-total span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.terra-category-list,
+.terra-insight-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.terra-category-list li,
+.terra-insight-list li {
+  border-top: 1px solid var(--border);
+}
+
+.terra-category-list li:first-child,
+.terra-insight-list li:first-child {
+  border-top: 0;
+}
+
+.terra-category-list a {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1fr) minmax(5rem, 1.2fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 0;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.terra-category-list a:hover .terra-category-name {
+  color: var(--primary);
+}
+
+.terra-category-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.terra-category-track {
+  display: block;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-soft);
+  height: 0.5rem;
+}
+
+.terra-category-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--primary);
+}
+
+.terra-category-amount {
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.terra-review-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.8rem;
+  border-radius: 0.7rem;
+  background: var(--warning-bg);
+  padding: 0.75rem 0.85rem;
+}
+
+.terra-review-row strong,
+.terra-review-row span {
+  display: block;
+}
+
+.terra-review-row strong {
+  font-size: 0.85rem;
+}
+
+.terra-review-row span {
+  color: var(--warning-text);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.terra-review-row a {
+  flex: 0 0 auto;
+  color: var(--primary-hover);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.terra-empty-state {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.terra-insight-list li {
+  padding: 0.85rem 0;
+}
+
+.terra-insight-list strong,
+.terra-insight-list span {
+  display: block;
+}
+
+.terra-insight-list strong {
+  font-size: 0.88rem;
+}
+
+.terra-insight-list span {
+  margin-top: 0.18rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.terra-secondary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.terra-compact-panel {
+  display: flex;
+  min-height: 10rem;
+  flex-direction: column;
+}
+
+.terra-dashboard-footer {
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+.terra-footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.terra-footer-actions form {
+  margin: 0;
+}
+
+@media (min-width: 72rem) {
+  .terra-metric-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 54rem) {
+  .terra-app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .terra-sidebar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 1rem;
+  }
+
+  .terra-navigation {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.25rem;
+    margin-top: 0;
+  }
+
+  .terra-navigation a {
+    justify-content: center;
+    min-height: 2.25rem;
+    padding: 0.4rem;
+    font-size: 0.76rem;
+    text-align: center;
+  }
+
+  .terra-settings-link {
+    align-self: center;
+    margin: 0;
+    border: 0;
+    padding: 0.4rem;
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 44rem) {
+  .terra-topbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .terra-topbar-actions {
+    justify-content: space-between;
+  }
+
+  .terra-quality-bar,
+  .terra-dashboard-columns,
+  .terra-secondary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .terra-quality-bar div {
+    border-top: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+    border-left: 0;
+    padding: 0.65rem 0 0;
+  }
+
+  .terra-quality-bar div:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 32rem) {
+  .terra-navigation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .terra-metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .terra-category-list a {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .terra-category-track {
+    grid-column: 1 / -1;
+  }
+
+  .terra-review-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .terra-footer-actions,
+  .terra-footer-actions .button,
+  .terra-footer-actions form,
+  .terra-footer-actions form .button {
+    width: 100%;
   }
 }

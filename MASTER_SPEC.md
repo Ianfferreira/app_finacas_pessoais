@@ -376,9 +376,9 @@ Tabela: Regra, Tipo, Resultado, Uso, Prioridade e Status. Filtros por tipo e sta
 - desktop-first responsivo;
 - estilo minimalista, analítico, calmo e confiável;
 - fundo branco/cinza muito claro, cards brancos, bordas discretas, texto quase preto e cinzas neutros;
-- azul/índigo como cor principal;
-- verde, vermelho e laranja somente com função semântica; nem todo gasto é vermelho;
-- Inter ou Geist; números tabulares quando disponível;
+- verde-floresta como cor principal, sobre neutros quentes claros;
+- verde, ocre e vermelho têm papéis semânticos explícitos; nem todo gasto é vermelho;
+- Nunito Sans para interface e Literata somente em títulos editoriais; números tabulares quando disponível;
 - bastante espaço em branco e poucos gráficos;
 - hierarquia: número primeiro, rótulo e comparação depois;
 - não depender apenas de cor; contraste WCAG AA, foco visível, teclado e rótulos acessíveis;
