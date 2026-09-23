@@ -80,6 +80,14 @@ usa o mesmo retrato no snapshot versionado do fechamento. Se houver qualquer
 pendência, `confirm_pending` precisa ser `true` para criar o estado
 `closed_with_pending`; sem pendências, o estado é `closed`.
 
+## Decisões manuais em Movimentações
+
+`set_transaction_nature_manual` e `create_confirmed_transaction_link` são as
+rotinas autenticadas usadas pela tela de Movimentações. Ambas verificam que as
+duas pontas pertencem ao usuário, preservam a decisão manual/revisão e inserem
+um evento em `audit_events`. A interface não grava mais essas decisões por
+`update` ou `insert` direto.
+
 ## `public.transaction_links`
 
 Criada em `20260921170000_create_transaction_links.sql`, esta tabela guarda

@@ -1424,6 +1424,15 @@ export type Database = {
         Args: { p_confirm_pending?: boolean; target_month: string }
         Returns: string
       }
+      create_confirmed_transaction_link: {
+        Args: {
+          p_amount: number
+          p_from_transaction_id: string
+          p_link_type: Database["public"]["Enums"]["link_type"]
+          p_to_transaction_id: string
+        }
+        Returns: string
+      }
       import_card_statement: {
         Args: {
           p_card_last_fours?: Json
@@ -1496,6 +1505,13 @@ export type Database = {
       }
       seed_default_categories: {
         Args: { target_user_id: string }
+        Returns: undefined
+      }
+      set_transaction_nature_manual: {
+        Args: {
+          p_nature: Database["public"]["Enums"]["economic_nature"]
+          p_transaction_id: string
+        }
         Returns: undefined
       }
       set_transaction_ownership: {

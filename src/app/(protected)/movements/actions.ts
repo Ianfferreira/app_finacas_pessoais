@@ -33,31 +33,13 @@ export async function setTransactionNature(formData: FormData) {
   }
 
   const supabase = await createClient();
-  const { data: transaction, error: readError } = await supabase
-    .from("transactions")
-    .select("manual_locks")
-    .eq("id", transactionId)
-    .maybeSingle();
-
-  if (readError || !transaction) {
-    redirectWithError("Movimentação não encontrada.");
-  }
-
-  const locks = transaction.manual_locks;
-  const manualLocks =
-    locks && typeof locks === "object" && !Array.isArray(locks)
-      ? { ...locks, nature: true }
-      : { nature: true };
-  const { error: updateError } = await supabase
-    .from("transactions")
-    .update({
-      nature: selectedNature as EconomicNature,
-      nature_source: "manual",
-      nature_confidence: 1,
-      manual_locks: manualLocks,
-    })
-    .eq("id", transactionId);
-
+  const { error: updateError } = await supabase.rpc(
+    "set_transaction_nature_manual",
+    {
+      p_transaction_id: transactionId,
+      p_nature: selectedNature as EconomicNature,
+    },
+  );
   if (updateError) {
     redirectWithError("Não foi possível salvar a natureza econômica.");
   }
@@ -87,19 +69,11 @@ export async function createTransactionLink(formData: FormData) {
   }
 
   const supabase = await createClient();
-  const { data: claims } = await supabase.auth.getClaims();
-  const userId = claims?.claims?.sub;
-  if (!userId) {
-    redirect("/login?next=/movements");
-  }
-  const { error } = await supabase.from("transaction_links").insert({
-    user_id: userId,
-    from_transaction_id: fromTransactionId,
-    to_transaction_id: toTransactionId,
-    link_type: linkType as TransactionLinkType,
-    amount: Number(amount),
-    status: "confirmed",
-    confirmed_by_user: true,
+  const { error } = await supabase.rpc("create_confirmed_transaction_link", {
+    p_from_transaction_id: fromTransactionId,
+    p_to_transaction_id: toTransactionId,
+    p_link_type: linkType as TransactionLinkType,
+    p_amount: Number(amount),
   });
 
   if (error) {

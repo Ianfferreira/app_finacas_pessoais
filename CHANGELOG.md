@@ -41,6 +41,9 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - Qualidade mensal detalhada e versionada: fechamento com pendências passou a
   exigir confirmação explícita e o estado `closed` só é usado quando não há
   pendências de classificação, titularidade, conciliação ou duplicidade.
+- Edições de natureza e vínculos confirmados na tela de Movimentações agora
+  passam por rotinas auditáveis no banco, com isolamento por usuário e
+  resolução explícita da pendência correspondente.
 
 - Visão Geral com detalhamento por categoria: valores absolutos, percentuais
   calculados somente sobre os gastos já categorizados e bloco separado para
