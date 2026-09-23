@@ -68,7 +68,7 @@ describe("card-statement adapters", () => {
     );
   });
 
-  it("parses an Inter zero-due statement with multiple cards and retains its purchases", () => {
+  it("parses an Inter zero-due statement with multiple cards, payments, and abbreviated reversals", () => {
     const result = parseInterCardStatementPdfText(`
       Resumo da fatura
       01/09/2026 R$ 0,00
@@ -79,19 +79,22 @@ describe("card-statement adapters", () => {
       14 de ago. 2026 Example restaurant - R$ 87,81
       CARTÃO 5555****1142
       24 de jul. 2026 PAGAMENTO ON LINE - + R$ 531,00
+      25 de jul. 2026 EST ASS Synthetic subscription - + R$ 10,00
     `);
 
     expect(result.success).toBe(true);
     if (!result.success) return;
     expect(result.statement.dueOn).toBe("2026-09-01");
     expect(result.statement.cycleEnd).toBe("2026-08-14");
-    expect(result.statement.transactions).toHaveLength(3);
+    expect(result.statement.parserVersion).toBe("2");
+    expect(result.statement.transactions).toHaveLength(4);
     expect(result.statement.transactions[0]).toMatchObject({
       cardLastFour: "6976",
       competenceMonth: "2026-08-01",
       installment: { number: 1, total: 12 },
     });
     expect(result.statement.transactions[2].kind).toBe("payment");
+    expect(result.statement.transactions[3].kind).toBe("reversal");
   });
 
   it("parses the Rico/XP CSV contract and derives the statement competence from its due date", () => {

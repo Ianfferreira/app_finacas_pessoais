@@ -43,7 +43,14 @@ export function parseInterCardStatementPdfText(
     const descriptionRaw = normalizeDescription(
       match[4].replace(/[-+]\s*$/, ""),
     );
-    const isPayment = /pagamento/i.test(descriptionRaw) || match[5] === "+";
+    // Credits in the Inter layout share the "+" signal with statement
+    // payments. Keep the source signal, but recognize the provider's generic
+    // reversal labels first so a reversal does not become a card payment.
+    const isReversal = /(?:^|\s)(?:estorno|est\.?\s+ass)\b/i.test(
+      descriptionRaw,
+    );
+    const isPayment =
+      !isReversal && (/pagamento/i.test(descriptionRaw) || match[5] === "+");
     transactions.push({
       sourceRowNumber: index + 1,
       cardLastFour: currentCardLastFour,
@@ -52,11 +59,7 @@ export function parseInterCardStatementPdfText(
       competenceMonth: "",
       descriptionRaw,
       amount: brazilianMoneyToCents(match[6]),
-      kind: isPayment
-        ? "payment"
-        : /estorno/i.test(descriptionRaw)
-          ? "reversal"
-          : "purchase",
+      kind: isReversal ? "reversal" : isPayment ? "payment" : "purchase",
       installment: parseInstallment(descriptionRaw),
       rawPayload: { line: normalizedLine, cardLastFour: currentCardLastFour },
     });
@@ -84,7 +87,7 @@ export function parseInterCardStatementPdfText(
     statement: {
       institutionCode: "INTER",
       parserName: "inter-card-statement-pdf",
-      parserVersion: "1",
+      parserVersion: "2",
       cycleStart: null,
       cycleEnd,
       dueOn,

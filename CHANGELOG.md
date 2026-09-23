@@ -6,6 +6,10 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Corrigido
 
+- O adapter de fatura Inter agora reconhece o rótulo abreviado de estorno
+  usado pelo emissor antes de interpretar o sinal de crédito. Assim, um
+  estorno não é importado como pagamento de fatura; a mudança está versionada
+  como `inter-card-statement-pdf` v2 e coberta por fixture sintética.
 - A extração de texto de PDFs agora inicializa o adaptador de canvas do
   `pdf-parse` no servidor. Isso evita o erro `DOMMatrix is not defined` no
   preview de extratos e faturas em PDF, inclusive no build de produção.

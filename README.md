@@ -127,3 +127,4 @@ executa os testes de RLS, regenera os tipos e repete o typecheck.
 - `CHANGELOG.md`: entregas por fase;
 - `docs/decisions/`: decisões técnicas duradouras;
 - `docs/data-dictionary.md`: schema efetivamente implementado.
+- `docs/parser-catalog.md`: formatos aceitos, versões e limites dos adapters.
