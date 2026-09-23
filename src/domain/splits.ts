@@ -21,6 +21,12 @@ export function assertExactSplit(
   if (splits.filter((split) => split.personId === null).length > 1) {
     throw new Error("O rateio pode ter apenas uma parcela pessoal.");
   }
+  const people = splits
+    .map((split) => split.personId)
+    .filter((personId): personId is string => personId !== null);
+  if (new Set(people).size !== people.length) {
+    throw new Error("Uma pessoa pode aparecer apenas uma vez no rateio.");
+  }
 }
 
 export type ThirdPartyLedgerEntry = { personId: string; amount: Money };

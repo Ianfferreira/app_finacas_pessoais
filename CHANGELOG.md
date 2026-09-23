@@ -33,6 +33,12 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Adicionado
 
+- Rotina atômica de rateio manual de despesas e estornos, por valor ou
+  percentual, com conservação determinística de centavos, lock de
+  titularidade, resolução da revisão, auditoria e projeção automática no razão
+  de terceiros. O rateio não pode ser alterado depois de uma liquidação
+  relacionada.
+
 - Visão Geral com detalhamento por categoria: valores absolutos, percentuais
   calculados somente sobre os gastos já categorizados e bloco separado para
   valores ainda a revisar.

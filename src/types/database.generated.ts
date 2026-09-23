@@ -1494,6 +1494,10 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: undefined
       }
+      set_transaction_ownership: {
+        Args: { p_allocations: Json; p_mode: string; p_transaction_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       account_type:

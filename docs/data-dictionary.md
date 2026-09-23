@@ -55,6 +55,21 @@ autenticado. Elas calculam gastos pessoais somente com allocations `self` e
 subtraem estornos. Pagamento de fatura, transferências, investimento, resgate e
 reembolsos não são agregados como renda nem como gasto pessoal.
 
+## Rateio atômico de titularidade
+
+`set_transaction_ownership(transaction_id, mode, allocations)` é a rotina
+autenticada que grava um rateio manual de despesa ou estorno. Ela aceita um
+único modo por vez: valores exatos (`amount`) ou percentuais (`percentage`).
+Os percentuais devem somar exatamente 100; os centavos residuais vão, em ordem
+de declaração, para as parcelas informadas primeiro.
+
+Na mesma transação do banco, a rotina substitui as `allocations`, cria a
+projeção correspondente em `third_party_entries`, resolve a pendência de
+titularidade, aplica o lock manual e registra o evento de auditoria. Uma parte
+de terceiro de despesa cria uma cobrança positiva (a pessoa deve ao titular); a
+de um estorno cria ajuste negativo. Rateios associados a lançamentos já
+liquidados não podem ser alterados, para preservar a trilha financeira.
+
 ## `public.transaction_links`
 
 Criada em `20260921170000_create_transaction_links.sql`, esta tabela guarda

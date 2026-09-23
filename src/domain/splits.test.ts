@@ -26,4 +26,13 @@ describe("third-party splits", () => {
       ]),
     ).toEqual({ person: 700n });
   });
+
+  it("does not allow the same third party twice in a split", () => {
+    expect(() =>
+      assertExactSplit(100n, [
+        { personId: "person", amount: 50n },
+        { personId: "person", amount: 50n },
+      ]),
+    ).toThrow(/apenas uma vez/);
+  });
 });

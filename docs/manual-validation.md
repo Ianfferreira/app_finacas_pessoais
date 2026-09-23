@@ -18,6 +18,21 @@ documento para registrar e-mails, extratos, documentos ou valores reais.
   categorizado, valores "A revisar" separados e abertura do drill-down em
   Movimentações filtradas pela competência e categoria.
 
+## Rateio de titularidade — a validar quando a interface estiver conectada
+
+1. Crie duas pessoas sintéticas e importe/crie uma despesa sintética de
+   R$ 100,01.
+2. Atribua 50% ao titular, 25% a cada pessoa, nessa ordem. O titular deve ficar
+   com R$ 50,01; os dois centavos residuais seguem a ordem declarada.
+3. Confira que a Visão Geral considera só R$ 50,01 como gasto pessoal e que o
+   razão de cada pessoa recebeu R$ 25,00 a receber.
+4. Edite o mesmo rateio por valores exatos e confirme que não restou uma
+   cobrança duplicada no razão, que a revisão de titularidade foi resolvida e
+   que há evento de auditoria.
+5. Depois de registrar uma liquidação contra essa cobrança, tente mudar o
+   rateio. A operação deve ser bloqueada até que a liquidação seja tratada; ela
+   nunca pode apagar silenciosamente uma baixa financeira.
+
 ## Ainda necessário antes do Supabase online
 
 1. Aplicar **uma única vez** a sequência de migrations localmente consolidada
