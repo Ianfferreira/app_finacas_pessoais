@@ -25,6 +25,24 @@ describe("Nubank statement CSV parser", () => {
       ],
     });
   });
+  it("recognizes both Brazilian and dot-decimal amount layouts", () => {
+    const result = parseNubankStatementCsv(
+      [
+        "Data,Valor,Identificador,Descrição",
+        "01/08/2026,2040.00,synthetic-dot,Entrada sintética",
+        "02/08/2026,2.040,synthetic-thousands,Saída sintética",
+        '03/08/2026,"2.040,00",synthetic-comma,Outro lançamento sintético',
+      ].join("\n"),
+    );
+    expect(result).toEqual({
+      success: true,
+      rows: [
+        expect.objectContaining({ signedAmountCents: 204000n }),
+        expect.objectContaining({ signedAmountCents: 204000n }),
+        expect.objectContaining({ signedAmountCents: 204000n }),
+      ],
+    });
+  });
   it("rejects unknown files and produces a deterministic file hash", () => {
     expect(parseNubankStatementCsv("date,amount")).toEqual({
       success: false,

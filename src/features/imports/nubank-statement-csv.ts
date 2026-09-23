@@ -46,7 +46,12 @@ function parseDate(value: string): string | null {
 }
 
 function parseSignedCents(value: string): bigint | null {
-  const normalized = value.trim().replace(/\./g, "").replace(",", ".");
+  const source = value.trim();
+  const normalized = source.includes(",")
+    ? source.replace(/\./g, "").replace(",", ".")
+    : /^-?\d+\.\d{1,2}$/.test(source)
+      ? source
+      : source.replace(/\./g, "");
   const match = /^(-?)(\d+)(?:\.(\d{1,2}))?$/.exec(normalized);
   if (!match) return null;
   const cents =

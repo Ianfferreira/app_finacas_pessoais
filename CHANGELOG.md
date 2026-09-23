@@ -6,6 +6,9 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Corrigido
 
+- O parser CSV Nubank agora aceita valores com vírgula decimal, ponto decimal
+  ou ponto de milhar. A versão 2 impede que um valor com ponto decimal seja
+  multiplicado por 100 em novas importações.
 - Visão Geral, Histórico e snapshots de fechamento agora calculam gastos
   pessoais pela alocação efetivamente atribuída ao titular. Estornos reduzem o
   gasto e não entram como receita, inclusive quando a direção bancária de

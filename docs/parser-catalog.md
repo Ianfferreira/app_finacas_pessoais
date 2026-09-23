@@ -8,7 +8,7 @@ versionada.
 
 | Instituição/produto | Formato | Parser                       | Versão atual | Cobertura relevante                                                      |
 | ------------------- | ------- | ---------------------------- | ------------ | ------------------------------------------------------------------------ |
-| Nubank, conta       | CSV     | `nubank-statement-csv`       | 1            | Extrato bancário.                                                        |
+| Nubank, conta       | CSV     | `nubank-statement-csv`       | 2            | Extrato bancário; aceita vírgula ou ponto decimal.                       |
 | Nubank, conta       | PDF     | `nubank-statement-pdf`       | 1            | Extrato bancário.                                                        |
 | Nubank, cartão      | PDF     | `nubank-card-statement-pdf`  | 1            | Compras, parcelas, estornos e pagamentos.                                |
 | Caixa, cartão       | PDF     | `caixa-card-statement-pdf`   | 1            | Múltiplos cartões, parcelas e créditos.                                  |
