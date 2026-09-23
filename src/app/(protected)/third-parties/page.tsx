@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
+import { TerraPage } from "@/features/ui/terra-page";
 
 import { recordThirdPartyEntry } from "./actions";
 
@@ -41,7 +42,7 @@ export default async function ThirdPartiesPage({
     balances.set(entry.person_id, current);
   }
   return (
-    <main className="centered-page">
+    <TerraPage current="/third-parties">
       <section className="card">
         <Link className="back-link" href="/dashboard">
           ← Visão geral
@@ -121,6 +122,6 @@ export default async function ThirdPartiesPage({
           })}
         </ul>
       </section>
-    </main>
+    </TerraPage>
   );
 }

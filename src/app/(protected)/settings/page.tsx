@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
+import { TerraPage } from "@/features/ui/terra-page";
 
 import {
   createAccount,
@@ -52,7 +53,7 @@ export default async function SettingsPage({
       .order("name"),
   ]);
   return (
-    <main className="centered-page">
+    <TerraPage current="/settings">
       <section className="card">
         <Link className="back-link" href="/dashboard">
           ← Visão geral
@@ -256,6 +257,6 @@ export default async function SettingsPage({
           </Link>
         </p>
       </section>
-    </main>
+    </TerraPage>
   );
 }

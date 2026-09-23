@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
+import { TerraPage } from "@/features/ui/terra-page";
 
 const money = new Intl.NumberFormat("pt-BR", {
   style: "currency",
@@ -11,7 +12,7 @@ export default async function HistoryPage() {
   const supabase = await createClient();
   const { data: periods } = await supabase.rpc("monthly_metrics_history");
   return (
-    <main className="centered-page">
+    <TerraPage current="/history">
       <section className="card">
         <Link className="back-link" href="/dashboard">
           ← Visão geral
@@ -43,6 +44,6 @@ export default async function HistoryPage() {
           </ul>
         )}
       </section>
-    </main>
+    </TerraPage>
   );
 }

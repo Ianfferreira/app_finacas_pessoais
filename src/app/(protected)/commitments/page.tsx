@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
+import { TerraPage } from "@/features/ui/terra-page";
 
 const money = new Intl.NumberFormat("pt-BR", {
   style: "currency",
@@ -18,7 +19,7 @@ export default async function CommitmentsPage() {
     .order("competence_month")
     .limit(200);
   return (
-    <main className="centered-page">
+    <TerraPage current="/commitments">
       <section className="card">
         <Link className="back-link" href="/dashboard">
           ← Visão geral
@@ -60,6 +61,6 @@ export default async function CommitmentsPage() {
           </ul>
         )}
       </section>
-    </main>
+    </TerraPage>
   );
 }

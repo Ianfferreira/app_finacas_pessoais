@@ -11,6 +11,10 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
   componentes responsivos para qualidade, métricas, categorias e insights.
 - A direção visual documentada agora adota Nunito Sans, Literata e a paleta
   Terra, mantendo o ocre e o vermelho para estados semânticos específicos.
+- Movimentações, Revisão, Importações, Terceiros, Histórico, Compromissos,
+  Regras e Configurações agora compartilham a navegação, a estrutura
+  responsiva e os componentes visuais do design system Terra, preservando as
+  consultas e ações de servidor existentes.
 
 ### Corrigido
 

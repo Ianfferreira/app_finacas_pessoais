@@ -128,6 +128,11 @@ input {
   background: var(--surface);
 }
 
+input[type="file"] {
+  width: 100%;
+  max-width: 100%;
+}
+
 select {
   min-height: 2.5rem;
   border: 1px solid #b8c1cd;
@@ -441,6 +446,131 @@ select:focus-visible,
 
 .terra-dashboard-main {
   min-width: 0;
+}
+
+.terra-workspace-main {
+  min-width: 0;
+}
+
+.terra-workspace-topbar {
+  display: flex;
+  min-height: 4.125rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  background: rgb(255 255 255 / 92%);
+  padding: 0.7rem clamp(1rem, 3vw, 2rem);
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.terra-workspace-topbar a {
+  display: inline-flex;
+  min-height: 2.3rem;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  padding: 0.45rem 0.75rem;
+  color: var(--primary-hover);
+  text-decoration: none;
+}
+
+.terra-workspace-topbar a:hover {
+  border-color: var(--primary);
+  background: var(--surface-accent);
+}
+
+.terra-workspace-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  min-width: 0;
+  align-content: start;
+  gap: 1rem;
+  max-width: min(76rem, 100%);
+  margin: 0 auto;
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.terra-workspace-content > .card {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  box-shadow: 0 1rem 2.75rem rgb(37 43 39 / 5%);
+}
+
+.terra-workspace-content h1 {
+  margin: 0.25rem 0 0.85rem;
+  font-family: Literata, Georgia, serif;
+  font-size: clamp(1.75rem, 3vw, 2.4rem);
+  letter-spacing: -0.035em;
+  line-height: 1.18;
+}
+
+.terra-workspace-content h2 {
+  margin: 2rem 0 0.75rem;
+  font-size: 1.05rem;
+}
+
+.terra-workspace-content > .card > ul:not(.stack) {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.terra-workspace-content ul.stack {
+  padding: 0;
+  list-style: none;
+}
+
+.terra-workspace-content form.stack,
+.terra-workspace-content form.stack label {
+  min-width: 0;
+}
+
+.terra-workspace-content form.stack input,
+.terra-workspace-content form.stack select {
+  width: 100%;
+  max-width: 100%;
+}
+
+.terra-workspace-content > .card > ul:not(.stack) > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  border-top: 1px solid var(--border);
+  padding: 0.75rem 0;
+}
+
+.terra-workspace-content > .card > ul:not(.stack) > li:first-child {
+  border-top: 0;
+}
+
+.terra-workspace-content .movement {
+  background: #fffefa;
+  box-shadow: 0 0.35rem 1rem rgb(37 43 39 / 3%);
+}
+
+.terra-workspace-content .stack > .movement {
+  padding: 1.1rem;
+}
+
+.terra-workspace-content .movement > form:not(.movement-nature) {
+  display: inline-flex;
+  margin: 0.75rem 0.5rem 0 0;
+}
+
+.terra-workspace-content .movement > form:not(.movement-nature) .button {
+  min-height: 2.3rem;
+}
+
+.terra-workspace-content .back-link {
+  margin-bottom: 1.25rem;
 }
 
 .terra-topbar {
@@ -933,5 +1063,16 @@ select:focus-visible,
   .terra-footer-actions form,
   .terra-footer-actions form .button {
     width: 100%;
+  }
+
+  .terra-workspace-content .movement-nature {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .terra-workspace-content .movement-nature label,
+  .terra-workspace-content .movement-nature select {
+    min-width: 0;
+    max-width: 100%;
   }
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TerraPage } from "@/features/ui/terra-page";
 import { CardStatementImportForm } from "./card-statement-import-form";
 import { ImportForm } from "./import-form";
 import { NubankPdfImportForm } from "./nubank-pdf-import-form";
@@ -9,7 +10,7 @@ export default async function ImportsPage({
 }) {
   const { error } = await searchParams;
   return (
-    <main className="centered-page">
+    <TerraPage current="/imports">
       <section className="card auth-card">
         <Link className="back-link" href="/dashboard">
           ← Perfil
@@ -37,6 +38,6 @@ export default async function ImportsPage({
         </p>
         <CardStatementImportForm />
       </section>
-    </main>
+    </TerraPage>
   );
 }

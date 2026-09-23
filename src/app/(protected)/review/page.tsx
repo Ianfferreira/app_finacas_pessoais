@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { ECONOMIC_NATURE_OPTIONS } from "@/domain/natures";
+import { TerraPage } from "@/features/ui/terra-page";
 import { createClient } from "@/lib/supabase/server";
 
 import {
@@ -32,7 +33,7 @@ export default async function ReviewPage({
       .order("sort_order"),
   ]);
   return (
-    <main className="centered-page">
+    <TerraPage current="/review">
       <section className="card">
         <Link className="back-link" href="/movements">
           ← Movimentações
@@ -135,6 +136,6 @@ export default async function ReviewPage({
           </ul>
         )}
       </section>
-    </main>
+    </TerraPage>
   );
 }

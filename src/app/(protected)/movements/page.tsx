@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { ECONOMIC_NATURE_OPTIONS } from "@/domain/natures";
 import { TRANSACTION_LINK_TYPE_OPTIONS } from "@/domain/transaction-links";
+import { TerraPage } from "@/features/ui/terra-page";
 import { createClient } from "@/lib/supabase/server";
 import { createTransactionLink, setTransactionNature } from "./actions";
 
@@ -42,7 +43,7 @@ export default async function MovementsPage({
   }
   const { data } = await movementsQuery;
   return (
-    <main className="centered-page">
+    <TerraPage current="/movements">
       <section className="card">
         <Link className="back-link" href="/imports">
           ← Importações
@@ -159,6 +160,6 @@ export default async function MovementsPage({
           </ul>
         )}
       </section>
-    </main>
+    </TerraPage>
   );
 }
