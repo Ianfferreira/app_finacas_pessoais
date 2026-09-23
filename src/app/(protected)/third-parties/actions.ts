@@ -26,16 +26,11 @@ export async function recordThirdPartyEntry(formData: FormData) {
     redirect("/third-parties?error=Lan%C3%A7amento%20inv%C3%A1lido.");
   }
   const supabase = await createClient();
-  const { data } = await supabase.auth.getClaims();
-  const userId = data?.claims?.sub;
-  if (!userId) redirect("/login?next=/third-parties");
-  const signedAmount = kind === "charge" ? Number(amount) : -Number(amount);
-  const { error } = await supabase.from("third_party_entries").insert({
-    user_id: userId,
-    person_id: personId,
-    kind,
-    amount: signedAmount,
-    note: typeof note === "string" && note.trim() ? note.trim() : null,
+  const { error } = await supabase.rpc("record_manual_third_party_entry", {
+    p_person_id: personId,
+    p_kind: kind,
+    p_amount: Number(amount),
+    p_note: typeof note === "string" && note.trim() ? note.trim() : undefined,
   });
   if (error)
     redirect(

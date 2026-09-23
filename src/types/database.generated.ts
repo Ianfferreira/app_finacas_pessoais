@@ -1546,6 +1546,26 @@ export type Database = {
           personal_expenses: number
         }[]
       }
+      record_manual_third_party_entry: {
+        Args: {
+          p_amount: number
+          p_kind: Database["public"]["Enums"]["third_party_entry_kind"]
+          p_note?: string
+          p_occurred_on?: string
+          p_person_id: string
+        }
+        Returns: string
+      }
+      record_third_party_settlement: {
+        Args: {
+          p_allocations: Json
+          p_amount: number
+          p_note: string
+          p_occurred_on: string
+          p_person_id: string
+        }
+        Returns: string
+      }
       reopen_month: { Args: { target_month: string }; Returns: undefined }
       reprocess_transaction_classification: {
         Args: { p_transaction_id: string }

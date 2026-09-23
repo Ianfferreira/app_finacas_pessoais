@@ -47,6 +47,9 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - Documentos distintos com a mesma fingerprint financeira passam a gerar uma
   candidatura de possível duplicidade e pendências para revisão; nenhuma
   movimentação é mesclada ou removida automaticamente.
+- Liquidações de terceiros agora podem distribuir um reembolso parcial entre
+  várias cobranças, sem ultrapassar o saldo aberto, com razão e auditoria
+  atômicos. Créditos/excedentes continuam exigindo classificação explícita.
 
 - Visão Geral com detalhamento por categoria: valores absolutos, percentuais
   calculados somente sobre os gastos já categorizados e bloco separado para

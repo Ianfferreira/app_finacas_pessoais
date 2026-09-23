@@ -96,6 +96,16 @@ normalizada, direção, natureza e competência. O detector cria apenas uma
 pendência explicável para revisão; ele nunca mescla, apaga ou marca uma das
 movimentações como duplicada sem decisão do usuário.
 
+## Liquidações de terceiros
+
+`record_third_party_settlement` registra uma entrada confirmada de uma pessoa e
+rateia seu valor por uma ou mais cobranças abertas, sempre sem exceder o saldo
+de cada uma. A operação cria `settlements`, `settlement_allocations`, um débito
+no razão e auditoria em uma única transação. Um valor recebido maior não é
+baixado automaticamente: deve ser registrado separadamente e classificado
+explicitamente como crédito, receita, outro reembolso ou pendência pela
+interface.
+
 ## `public.transaction_links`
 
 Criada em `20260921170000_create_transaction_links.sql`, esta tabela guarda
