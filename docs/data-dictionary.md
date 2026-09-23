@@ -88,6 +88,14 @@ duas pontas pertencem ao usuário, preservam a decisão manual/revisão e insere
 um evento em `audit_events`. A interface não grava mais essas decisões por
 `update` ou `insert` direto.
 
+## Possíveis duplicidades
+
+`possible_duplicate_candidates` guarda pares de movimentações de arquivos
+distintos que compartilham conta ou cartão, data, valor, moeda, descrição
+normalizada, direção, natureza e competência. O detector cria apenas uma
+pendência explicável para revisão; ele nunca mescla, apaga ou marca uma das
+movimentações como duplicada sem decisão do usuário.
+
 ## `public.transaction_links`
 
 Criada em `20260921170000_create_transaction_links.sql`, esta tabela guarda

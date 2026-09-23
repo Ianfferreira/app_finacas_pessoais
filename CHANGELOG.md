@@ -44,6 +44,9 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - Edições de natureza e vínculos confirmados na tela de Movimentações agora
   passam por rotinas auditáveis no banco, com isolamento por usuário e
   resolução explícita da pendência correspondente.
+- Documentos distintos com a mesma fingerprint financeira passam a gerar uma
+  candidatura de possível duplicidade e pendências para revisão; nenhuma
+  movimentação é mesclada ou removida automaticamente.
 
 - Visão Geral com detalhamento por categoria: valores absolutos, percentuais
   calculados somente sobre os gastos já categorizados e bloco separado para

@@ -907,6 +907,54 @@ export type Database = {
           },
         ]
       }
+      possible_duplicate_candidates: {
+        Row: {
+          candidate_transaction_id: string
+          created_at: string
+          fingerprint: Json
+          id: string
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["duplicate_candidate_status"]
+          transaction_id: string
+          user_id: string
+        }
+        Insert: {
+          candidate_transaction_id: string
+          created_at?: string
+          fingerprint: Json
+          id?: string
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["duplicate_candidate_status"]
+          transaction_id: string
+          user_id: string
+        }
+        Update: {
+          candidate_transaction_id?: string
+          created_at?: string
+          fingerprint?: Json
+          id?: string
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["duplicate_candidate_status"]
+          transaction_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "possible_duplicate_candidates_candidate_transaction_id_use_fkey"
+            columns: ["candidate_transaction_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id", "user_id"]
+          },
+          {
+            foreignKeyName: "possible_duplicate_candidates_transaction_id_user_id_fkey"
+            columns: ["transaction_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -1538,6 +1586,7 @@ export type Database = {
         | "heuristic"
         | "ai_suggestion"
         | "unknown"
+      duplicate_candidate_status: "pending" | "confirmed" | "dismissed"
       economic_nature:
         | "income"
         | "expense"
@@ -1738,6 +1787,7 @@ export const Constants = {
         "ai_suggestion",
         "unknown",
       ],
+      duplicate_candidate_status: ["pending", "confirmed", "dismissed"],
       economic_nature: [
         "income",
         "expense",
