@@ -244,8 +244,21 @@ export async function importCardStatement(formData: FormData) {
   };
   const { error } = await supabase.rpc("import_card_statement", rpcPayload);
   if (error) {
+    // Deliberately log only database diagnostics. File bytes and parsed
+    // financial rows remain private evidence and must never enter logs.
+    console.error("Card statement import RPC failed", {
+      code: error.code,
+      details: error.details,
+      hint: error.hint,
+      message: error.message,
+    });
     if (/duplicate import/i.test(error.message)) {
       redirect("/imports?error=Este%20arquivo%20j%C3%A1%20foi%20importado.");
+    }
+    if (error.code === "PGRST202") {
+      redirect(
+        "/imports?error=O%20banco%20online%20ainda%20n%C3%A3o%20reconhece%20a%20rotina%20de%20importa%C3%A7%C3%A3o.",
+      );
     }
     redirect(
       "/imports?error=N%C3%A3o%20foi%20poss%C3%ADvel%20registrar%20a%20fatura.",

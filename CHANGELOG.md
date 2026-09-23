@@ -4,6 +4,14 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ## [Unreleased]
 
+### Corrigido
+
+- A extração de texto de PDFs agora inicializa o adaptador de canvas do
+  `pdf-parse` no servidor. Isso evita o erro `DOMMatrix is not defined` no
+  preview de extratos e faturas em PDF, inclusive no build de produção.
+- A importação de faturas agora diferencia corretamente uma parcela de um
+  campo JSON nulo, preservando compras à vista no mesmo documento.
+
 ### Adicionado — Etapa 4: Naturezas e conciliação básica
 
 - `transaction_links` para relacionar estornos, pagamentos de fatura,

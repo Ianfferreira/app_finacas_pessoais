@@ -1,15 +1,7 @@
 import "server-only";
 
-import { PDFParse } from "pdf-parse";
+import { extractPdfTextFromBytes } from "./pdf-text-extractor";
 
 export async function extractPdfText(file: File): Promise<string> {
-  const parser = new PDFParse({
-    data: new Uint8Array(await file.arrayBuffer()),
-  });
-  try {
-    const result = await parser.getText();
-    return result.text;
-  } finally {
-    await parser.destroy();
-  }
+  return extractPdfTextFromBytes(new Uint8Array(await file.arrayBuffer()));
 }

@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(6);
+select plan(7);
 
 insert into auth.users (id, email)
 values ('70000000-0000-4000-8000-000000000002', 'card-import-test@example.test');
@@ -17,7 +17,8 @@ select lives_ok(
     '["1234"]'::jsonb,
     '[
       {"sourceRowNumber":2,"cardLastFour":"1234","occurredOn":"2026-08-20","purchaseDate":"2026-08-20","competenceMonth":"2026-08-01","descriptionRaw":"Compra sintética 2 de 3","amount":"99.99","kind":"purchase","installment":{"number":2,"total":3},"sourceGroupKey":"synthetic-card-group","rawPayload":{}},
-      {"sourceRowNumber":3,"cardLastFour":"1234","occurredOn":"2026-09-05","purchaseDate":null,"competenceMonth":"2026-08-01","descriptionRaw":"Pagamento da fatura","amount":"99.99","kind":"payment","installment":null,"rawPayload":{}}
+      {"sourceRowNumber":3,"cardLastFour":"1234","occurredOn":"2026-08-21","purchaseDate":"2026-08-21","competenceMonth":"2026-08-01","descriptionRaw":"Compra simples sintética","amount":"10.00","kind":"purchase","installment":null,"rawPayload":{}},
+      {"sourceRowNumber":4,"cardLastFour":"1234","occurredOn":"2026-09-05","purchaseDate":null,"competenceMonth":"2026-08-01","descriptionRaw":"Pagamento da fatura","amount":"109.99","kind":"payment","installment":null,"rawPayload":{}}
     ]'::jsonb
   )$$,
   'an authenticated user atomically imports a synthetic card statement'
@@ -28,8 +29,8 @@ select is(
   'the statement is associated with its created card'
 );
 select is(
-  (select count(*)::integer from public.transactions), 2,
-  'purchase and payment become distinct movements'
+  (select count(*)::integer from public.transactions), 3,
+  'installment, ordinary purchase, and payment become distinct movements'
 );
 select is(
   (select nature::text from public.transactions where description_raw = 'Pagamento da fatura'),
@@ -43,6 +44,10 @@ select is(
 select is(
   (select count(*)::integer from public.installments where status = 'scheduled'), 1,
   'the known future installment is scheduled'
+);
+select is(
+  (select count(*)::integer from public.installment_groups), 1,
+  'an ordinary purchase with JSON null installment does not create an installment group'
 );
 
 select * from finish();
