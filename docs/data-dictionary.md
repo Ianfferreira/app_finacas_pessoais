@@ -70,6 +70,16 @@ de terceiro de despesa cria uma cobrança positiva (a pessoa deve ao titular); a
 de um estorno cria ajuste negativo. Rateios associados a lançamentos já
 liquidados não podem ser alterados, para preservar a trilha financeira.
 
+## Qualidade e fechamento mensal
+
+`month_closing_quality(month)` expõe a qualidade do mês do próprio usuário:
+fontes presentes, pendências de categoria, natureza, titularidade,
+conciliação e possíveis duplicidades, além da quantidade de movimentações e
+do valor impactado sem dupla contagem. `close_month(month, confirm_pending)`
+usa o mesmo retrato no snapshot versionado do fechamento. Se houver qualquer
+pendência, `confirm_pending` precisa ser `true` para criar o estado
+`closed_with_pending`; sem pendências, o estado é `closed`.
+
 ## `public.transaction_links`
 
 Criada em `20260921170000_create_transaction_links.sql`, esta tabela guarda

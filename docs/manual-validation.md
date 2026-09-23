@@ -33,6 +33,16 @@ documento para registrar e-mails, extratos, documentos ou valores reais.
    rateio. A operação deve ser bloqueada até que a liquidação seja tratada; ela
    nunca pode apagar silenciosamente uma baixa financeira.
 
+## Fechamento seguro — a validar quando a confirmação estiver na interface
+
+1. Deixe uma despesa sintética sem categoria ou titularidade confirmada e abra
+   a qualidade do mês: a quantidade e o valor afetados devem aparecer.
+2. Tente fechar sem confirmar. O banco deve recusar a operação.
+3. Confirme o fechamento com pendências; o estado deve ser
+   `closed_with_pending` e guardar o retrato de qualidade em uma versão.
+4. Resolva as pendências, feche novamente sem confirmação e confira o estado
+   `closed` em uma nova versão, sem apagar a anterior.
+
 ## Ainda necessário antes do Supabase online
 
 1. Aplicar **uma única vez** a sequência de migrations localmente consolidada

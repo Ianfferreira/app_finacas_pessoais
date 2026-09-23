@@ -38,6 +38,9 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
   titularidade, resolução da revisão, auditoria e projeção automática no razão
   de terceiros. O rateio não pode ser alterado depois de uma liquidação
   relacionada.
+- Qualidade mensal detalhada e versionada: fechamento com pendências passou a
+  exigir confirmação explícita e o estado `closed` só é usado quando não há
+  pendências de classificação, titularidade, conciliação ou duplicidade.
 
 - Visão Geral com detalhamento por categoria: valores absolutos, percentuais
   calculados somente sobre os gastos já categorizados e bloco separado para

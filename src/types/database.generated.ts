@@ -1420,7 +1420,10 @@ export type Database = {
         Args: { target_transaction_id: string; target_user_id: string }
         Returns: undefined
       }
-      close_month: { Args: { target_month: string }; Returns: string }
+      close_month: {
+        Args: { p_confirm_pending?: boolean; target_month: string }
+        Returns: string
+      }
       import_card_statement: {
         Args: {
           p_card_last_fours?: Json
@@ -1466,6 +1469,7 @@ export type Database = {
           personal_expenses: number
         }[]
       }
+      month_closing_quality: { Args: { target_month: string }; Returns: Json }
       month_metrics: {
         Args: { target_month: string }
         Returns: {

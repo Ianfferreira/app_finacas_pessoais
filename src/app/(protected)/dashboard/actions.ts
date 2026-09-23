@@ -24,7 +24,15 @@ export async function signOut() {
 export async function closeCurrentMonth(formData: FormData) {
   const supabase = await createClient();
   const month = targetMonth(formData);
-  const { error } = await supabase.rpc("close_month", { target_month: month });
+  const confirmPending = formData.get("confirmPending") === "true";
+  const { error } = await supabase.rpc("close_month", {
+    target_month: month,
+    p_confirm_pending: confirmPending,
+  });
+  if (error?.code === "22023")
+    redirect(
+      `/dashboard?month=${month.slice(0, 7)}&error=Existem%20pend%C3%AAncias.%20Confira%20a%20qualidade%20do%20m%C3%AAs%20e%20confirme%20o%20fechamento%20com%20pend%C3%AAncias.`,
+    );
   if (error)
     redirect(
       `/dashboard?month=${month.slice(0, 7)}&error=N%C3%A3o%20foi%20poss%C3%ADvel%20fechar%20o%20m%C3%AAs.`,
