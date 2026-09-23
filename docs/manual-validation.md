@@ -14,6 +14,9 @@ documento para registrar e-mails, extratos, documentos ou valores reais.
 - Navegação para Histórico, Compromissos, Revisão, Regras e Configurações.
 - Links de exportação JSON, CSV e ZIP estruturados. A interface declara e a
   rota garante que arquivos privados e `raw_records` não sejam incluídos.
+- Visão Geral com categorias, valor em R$, percentual sobre o gasto já
+  categorizado, valores "A revisar" separados e abertura do drill-down em
+  Movimentações filtradas pela competência e categoria.
 
 ## Ainda necessário antes do Supabase online
 

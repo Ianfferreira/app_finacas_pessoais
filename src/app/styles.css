@@ -258,6 +258,39 @@ select:focus-visible,
   font-weight: 700;
 }
 
+.category-breakdown {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.category-breakdown a {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  padding: 0.8rem 0.9rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.category-breakdown a:hover {
+  border-color: var(--primary);
+}
+
+.category-breakdown span {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.review-notice {
+  background: #fff8e8;
+  color: #73500a;
+}
+
 .skeleton {
   border-radius: 0.5rem;
   background: linear-gradient(90deg, #eef1f5, #e1e6ec, #eef1f5);

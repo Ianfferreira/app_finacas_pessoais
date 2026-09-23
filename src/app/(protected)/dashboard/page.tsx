@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import {
+  buildCategoryBreakdown,
+  movementsDrilldownHref,
+} from "@/features/dashboard/category-breakdown";
 import { createClient } from "@/lib/supabase/server";
 
 import { closeCurrentMonth, reopenCurrentMonth, signOut } from "./actions";
@@ -45,6 +49,7 @@ export default async function DashboardPage({
     { data: profile },
     { data: metrics },
     { data: categoryMetrics },
+    { data: categories },
     review,
     { data: closing },
   ] = await Promise.all([
@@ -55,10 +60,15 @@ export default async function DashboardPage({
       .single(),
     supabase.rpc("month_metrics", { target_month: month }).maybeSingle(),
     supabase.rpc("month_category_metrics", { target_month: month }),
+    supabase.from("categories").select("id, name").eq("kind", "expense"),
     supabase
       .from("review_items")
-      .select("id", { count: "exact", head: true })
-      .eq("status", "open"),
+      .select("id, transactions!inner(competence_month)", {
+        count: "exact",
+        head: true,
+      })
+      .eq("status", "open")
+      .eq("transactions.competence_month", month),
     supabase
       .from("monthly_closings")
       .select("status, version")
@@ -68,7 +78,11 @@ export default async function DashboardPage({
 
   const income = metrics?.income ?? 0;
   const expenses = metrics?.personal_expenses ?? 0;
-  const insights = (categoryMetrics ?? []).slice(0, 3);
+  const categoryBreakdown = buildCategoryBreakdown(
+    categoryMetrics ?? [],
+    categories ?? [],
+  );
+  const insights = categoryBreakdown.categorized.slice(0, 3);
 
   return (
     <main className="centered-page">
@@ -125,19 +139,61 @@ export default async function DashboardPage({
             </dd>
           </div>
         </dl>
+        <section aria-labelledby="category-breakdown-heading">
+          <h2 id="category-breakdown-heading">Para onde foi meu dinheiro?</h2>
+          <p className="muted">
+            Percentuais usam somente o total já categorizado. Cada linha abre as
+            movimentações que formam o valor.
+          </p>
+          {categoryBreakdown.categorized.length ? (
+            <ul className="category-breakdown">
+              {categoryBreakdown.categorized.map((category) => (
+                <li key={category.category_id ?? category.category_name}>
+                  <Link
+                    href={movementsDrilldownHref(month, category.category_id)}
+                  >
+                    <strong>{category.category_name}</strong>
+                    <span>
+                      {formatCurrency.format(category.personal_expenses)}
+                      {category.percentage_of_categorized !== null
+                        ? ` · ${category.percentage_of_categorized.toFixed(1)}%`
+                        : " · sem base percentual"}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="muted">Ainda não há gastos pessoais categorizados.</p>
+          )}
+          {categoryBreakdown.uncategorized ? (
+            <p className="notice review-notice">
+              A revisar:{" "}
+              {formatCurrency.format(
+                categoryBreakdown.uncategorized.personal_expenses,
+              )}
+              {expenses > 0
+                ? ` · ${((categoryBreakdown.uncategorized.personal_expenses / expenses) * 100).toFixed(1)}% dos gastos pessoais capturados`
+                : ""}
+              .{" "}
+              <Link href={movementsDrilldownHref(month)}>
+                Ver movimentações
+              </Link>
+            </p>
+          ) : null}
+        </section>
         <h2>Insights factuais</h2>
         <ul>
           {insights.length ? (
-            insights.map(
-              ({ category_name: name, personal_expenses: amount }) => (
-                <li key={name}>
-                  {name}: {formatCurrency.format(amount)}
-                  {expenses
-                    ? ` (${((amount / expenses) * 100).toFixed(1)}%)`
-                    : ""}
-                </li>
-              ),
-            )
+            insights.map((category) => (
+              <li key={category.category_id ?? category.category_name}>
+                {category.category_name}:{" "}
+                {formatCurrency.format(category.personal_expenses)}
+                {category.percentage_of_categorized !== null
+                  ? ` (${category.percentage_of_categorized.toFixed(1)}% do categorizado)`
+                  : ""}
+              </li>
+            ))
           ) : (
             <li className="muted">
               Ainda não há gastos pessoais classificados.

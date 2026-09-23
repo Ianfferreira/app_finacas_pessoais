@@ -8,15 +8,39 @@ import { createTransactionLink, setTransactionNature } from "./actions";
 export default async function MovementsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ success?: string; error?: string }>;
+  searchParams: Promise<{
+    category?: string;
+    error?: string;
+    month?: string;
+    success?: string;
+  }>;
 }) {
-  const { success, error } = await searchParams;
+  const { success, error, month, category } = await searchParams;
   const supabase = await createClient();
-  const { data } = await supabase
+  const selectedMonth = /^\d{4}-(0[1-9]|1[0-2])$/.test(month ?? "")
+    ? `${month}-01`
+    : null;
+  const selectedCategory =
+    typeof category === "string" &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      category,
+    )
+      ? category
+      : null;
+  let movementsQuery = supabase
     .from("transactions")
-    .select("id, occurred_on, description_raw, amount, direction, nature")
+    .select(
+      "id, occurred_on, description_raw, amount, direction, nature, competence_month, category_id, categories(name)",
+    )
     .order("occurred_on", { ascending: false })
     .limit(100);
+  if (selectedMonth) {
+    movementsQuery = movementsQuery.eq("competence_month", selectedMonth);
+  }
+  if (selectedCategory) {
+    movementsQuery = movementsQuery.eq("category_id", selectedCategory);
+  }
+  const { data } = await movementsQuery;
   return (
     <main className="centered-page">
       <section className="card">
@@ -25,6 +49,15 @@ export default async function MovementsPage({
         </Link>
         <p className="eyebrow">Movimentações</p>
         <h1>Registros importados</h1>
+        {selectedMonth || selectedCategory ? (
+          <p className="notice review-notice">
+            Filtro ativo:{" "}
+            {selectedMonth ? `competência ${selectedMonth.slice(0, 7)}` : ""}
+            {selectedMonth && selectedCategory ? " · " : ""}
+            {selectedCategory ? "categoria selecionada" : ""}.{" "}
+            <Link href="/movements">Limpar filtros</Link>
+          </p>
+        ) : null}
         <Link className="button secondary" href="/review">
           Abrir revisão
         </Link>
@@ -45,6 +78,9 @@ export default async function MovementsPage({
                 <span className="muted">
                   {row.occurred_on ?? "Sem data"} · {row.direction} · R${" "}
                   {row.amount}
+                  {row.competence_month
+                    ? ` · competência ${row.competence_month.slice(0, 7)}`
+                    : ""}
                 </span>
                 <form action={setTransactionNature} className="movement-nature">
                   <input name="transactionId" type="hidden" value={row.id} />

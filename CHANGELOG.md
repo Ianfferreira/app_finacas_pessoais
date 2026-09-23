@@ -21,6 +21,12 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Adicionado
 
+- Visão Geral com detalhamento por categoria: valores absolutos, percentuais
+  calculados somente sobre os gastos já categorizados e bloco separado para
+  valores ainda a revisar.
+- Drill-down de categoria para Movimentações, preservando os filtros de
+  competência e categoria na URL. A tela de Movimentações também informa e
+  permite limpar esses filtros.
 - Configurações para cadastrar e desativar pessoas, categorias, contas e
   cartões sem apagar registros já relacionados.
 - Exportação manual em ZIP contendo o JSON estruturado, o CSV de
