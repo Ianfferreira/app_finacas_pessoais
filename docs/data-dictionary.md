@@ -47,6 +47,14 @@ O arquivo associado a uma importação fica no bucket privado
 `financial-imports`; sua primeira pasta é o UUID do dono. A política de Storage
 usa esse segmento para isolar leitura, upload, atualização e exclusão.
 
+## Agregados econômicos autenticados
+
+As funções `month_metrics(date)`, `monthly_metrics_history()` e
+`month_category_metrics(date)` são funções de leitura executadas como o usuário
+autenticado. Elas calculam gastos pessoais somente com allocations `self` e
+subtraem estornos. Pagamento de fatura, transferências, investimento, resgate e
+reembolsos não são agregados como renda nem como gasto pessoal.
+
 ## `public.transaction_links`
 
 Criada em `20260921170000_create_transaction_links.sql`, esta tabela guarda

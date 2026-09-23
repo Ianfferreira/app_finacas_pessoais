@@ -12,8 +12,8 @@ documento para registrar e-mails, extratos, documentos ou valores reais.
   de R$ 20,00, resultando em saldo a receber de R$ 30,00.
 - Fechar e reabrir o mês atual, preservando a versão `v1` do fechamento.
 - Navegação para Histórico, Compromissos, Revisão, Regras e Configurações.
-- Links de exportação JSON e CSV estruturados. A interface declara e a rota
-  garante que arquivos privados e `raw_records` não sejam incluídos.
+- Links de exportação JSON, CSV e ZIP estruturados. A interface declara e a
+  rota garante que arquivos privados e `raw_records` não sejam incluídos.
 
 ## Ainda necessário antes do Supabase online
 

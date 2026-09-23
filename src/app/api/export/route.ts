@@ -1,13 +1,12 @@
 import { NextRequest } from "next/server";
 
+import {
+  createStructuredExportZip,
+  transactionsToCsv,
+} from "@/features/export/financial-export";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
-
-function csvEscape(value: unknown) {
-  const text = value == null ? "" : String(value);
-  return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
-}
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
@@ -37,24 +36,9 @@ export async function GET(request: NextRequest) {
     supabase.from("cards").select("id, name, last_four, is_active"),
     supabase.from("categories").select("id, name, kind, is_active"),
   ]);
+  const csv = transactionsToCsv(transactions ?? []);
   if (format === "csv") {
-    const header = [
-      "id",
-      "occurred_on",
-      "competence_month",
-      "description",
-      "amount",
-      "direction",
-      "nature",
-      "category_id",
-      "is_void",
-    ];
-    const body = (transactions ?? []).map((transaction) =>
-      header
-        .map((key) => csvEscape(transaction[key as keyof typeof transaction]))
-        .join(","),
-    );
-    return new Response([header.join(","), ...body].join("\n"), {
+    return new Response(csv, {
       headers: {
         "Content-Type": "text/csv; charset=utf-8",
         "Content-Disposition":
@@ -74,6 +58,15 @@ export async function GET(request: NextRequest) {
     notice:
       "Arquivos privados originais, raw_records e credenciais não são exportados por este endpoint.",
   };
+  if (format === "zip") {
+    const archive = Uint8Array.from(createStructuredExportZip(payload, csv));
+    return new Response(archive.buffer, {
+      headers: {
+        "Content-Type": "application/zip",
+        "Content-Disposition": 'attachment; filename="financas-export.zip"',
+      },
+    });
+  }
   return Response.json(payload, {
     headers: {
       "Content-Disposition": 'attachment; filename="financas-export.json"',

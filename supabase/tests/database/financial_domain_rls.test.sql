@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(21);
+select plan(24);
 
 insert into auth.users (id, email)
 values
@@ -136,6 +136,21 @@ select throws_ok(
 select is(
   (select count(*) from public.transactions where user_id = '50000000-0000-4000-8000-000000000002'),
   0::bigint, 'explicit user-id filters do not bypass RLS'
+);
+select is(
+  (select income from public.month_metrics('2026-08-01')),
+  0.00::numeric,
+  'monthly metrics do not turn a reversal into income'
+);
+select is(
+  (select personal_expenses from public.month_metrics('2026-08-01')),
+  0.00::numeric,
+  'monthly metrics net a self expense and its reversal'
+);
+select is(
+  (select count(*) from public.monthly_metrics_history()),
+  1::bigint,
+  'monthly history is isolated to the authenticated user'
 );
 
 select * from finish();

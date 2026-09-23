@@ -15,63 +15,60 @@ function currentMonth() {
   return `${today.getUTCFullYear()}-${String(today.getUTCMonth() + 1).padStart(2, "0")}-01`;
 }
 
+const MONTH = /^(\d{4})-(0[1-9]|1[0-2])$/;
+
+function monthFromSearchParam(value: string | undefined): string {
+  if (!value || !MONTH.test(value)) return currentMonth();
+  return `${value}-01`;
+}
+
+function shiftMonth(month: string, offset: number): string {
+  const [year, value] = month.slice(0, 7).split("-").map(Number);
+  const shifted = new Date(Date.UTC(year, value - 1 + offset, 1));
+  return `${shifted.getUTCFullYear()}-${String(shifted.getUTCMonth() + 1).padStart(2, "0")}`;
+}
+
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; success?: string }>;
+  searchParams: Promise<{ error?: string; month?: string; success?: string }>;
 }) {
-  const { error, success } = await searchParams;
+  const { error, month: requestedMonth, success } = await searchParams;
   const supabase = await createClient();
   const { data: claims } = await supabase.auth.getClaims();
   const userId = claims?.claims?.sub;
   if (!userId) redirect("/login?next=/dashboard");
 
-  const month = currentMonth();
-  const [{ data: profile }, { data: transactions }, review, { data: closing }] =
-    await Promise.all([
-      supabase
-        .from("profiles")
-        .select("display_name")
-        .eq("user_id", userId)
-        .single(),
-      supabase
-        .from("transactions")
-        .select("amount, direction, nature, category_id, categories(name)")
-        .eq("competence_month", month)
-        .eq("is_void", false),
-      supabase
-        .from("review_items")
-        .select("id", { count: "exact", head: true })
-        .eq("status", "open"),
-      supabase
-        .from("monthly_closings")
-        .select("status, version")
-        .eq("month", month)
-        .maybeSingle(),
-    ]);
+  const month = monthFromSearchParam(requestedMonth);
+  const monthKey = month.slice(0, 7);
+  const [
+    { data: profile },
+    { data: metrics },
+    { data: categoryMetrics },
+    review,
+    { data: closing },
+  ] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("display_name")
+      .eq("user_id", userId)
+      .single(),
+    supabase.rpc("month_metrics", { target_month: month }).maybeSingle(),
+    supabase.rpc("month_category_metrics", { target_month: month }),
+    supabase
+      .from("review_items")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "open"),
+    supabase
+      .from("monthly_closings")
+      .select("status, version")
+      .eq("month", month)
+      .maybeSingle(),
+  ]);
 
-  const income = (transactions ?? [])
-    .filter(
-      (row) =>
-        row.direction === "inflow" &&
-        (row.nature === "income" || row.nature === "investment_income"),
-    )
-    .reduce((sum, row) => sum + row.amount, 0);
-  const expenses = (transactions ?? [])
-    .filter((row) => row.direction === "outflow" && row.nature === "expense")
-    .reduce((sum, row) => sum + row.amount, 0);
-  const categories = new Map<string, number>();
-  for (const row of transactions ?? []) {
-    if (row.direction !== "outflow" || row.nature !== "expense") continue;
-    const category = Array.isArray(row.categories)
-      ? row.categories[0]
-      : row.categories;
-    const name = category?.name ?? "Sem categoria";
-    categories.set(name, (categories.get(name) ?? 0) + row.amount);
-  }
-  const insights = [...categories.entries()]
-    .sort(([, left], [, right]) => right - left)
-    .slice(0, 3);
+  const income = metrics?.income ?? 0;
+  const expenses = metrics?.personal_expenses ?? 0;
+  const insights = (categoryMetrics ?? []).slice(0, 3);
 
   return (
     <main className="centered-page">
@@ -83,6 +80,14 @@ export default async function DashboardPage({
         <p className="muted">
           Competência {month.slice(0, 7)}. Valores permanecem preliminares
           enquanto existirem pendências de revisão.
+        </p>
+        <p className="month-navigation" aria-label="Navegação entre meses">
+          <Link href={`/dashboard?month=${shiftMonth(month, -1)}`}>
+            ← Mês anterior
+          </Link>
+          <Link href={`/dashboard?month=${shiftMonth(month, 1)}`}>
+            Próximo mês →
+          </Link>
         </p>
         {error ? <p className="notice error">{error}</p> : null}
         {success ? <p className="notice success">{success}</p> : null}
@@ -123,14 +128,16 @@ export default async function DashboardPage({
         <h2>Insights factuais</h2>
         <ul>
           {insights.length ? (
-            insights.map(([name, amount]) => (
-              <li key={name}>
-                {name}: {formatCurrency.format(amount)}
-                {expenses
-                  ? ` (${((amount / expenses) * 100).toFixed(1)}%)`
-                  : ""}
-              </li>
-            ))
+            insights.map(
+              ({ category_name: name, personal_expenses: amount }) => (
+                <li key={name}>
+                  {name}: {formatCurrency.format(amount)}
+                  {expenses
+                    ? ` (${((amount / expenses) * 100).toFixed(1)}%)`
+                    : ""}
+                </li>
+              ),
+            )
           ) : (
             <li className="muted">
               Ainda não há gastos pessoais classificados.
@@ -161,14 +168,16 @@ export default async function DashboardPage({
           </Link>
           {closing?.status === "in_progress" || !closing ? (
             <form action={closeCurrentMonth}>
+              <input name="month" type="hidden" value={month} />
               <button className="button secondary" type="submit">
-                Fechar mês atual
+                Fechar {monthKey}
               </button>
             </form>
           ) : (
             <form action={reopenCurrentMonth}>
+              <input name="month" type="hidden" value={month} />
               <button className="button secondary" type="submit">
-                Reabrir mês atual
+                Reabrir {monthKey}
               </button>
             </form>
           )}

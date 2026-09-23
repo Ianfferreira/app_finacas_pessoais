@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(6);
+select plan(8);
 
 insert into auth.users (id, email)
 values ('70000000-0000-4000-8000-000000000004', 'classification-test@example.test');
@@ -48,6 +48,15 @@ select lives_ok(
 select is(
   (select category_id from public.transactions where id = '75000000-0000-4000-8000-000000000004'),
   null::uuid, 'reprocessing does not overwrite a manually locked field'
+);
+select lives_ok(
+  $$delete from public.classification_rules where user_id = '70000000-0000-4000-8000-000000000004'$$,
+  'a rule can be deleted after it has been applied'
+);
+select is(
+  (select rule_id from public.classification_rule_applications limit 1),
+  null::uuid,
+  'deleting a rule preserves its historical application without a mutable rule link'
 );
 
 select * from finish();

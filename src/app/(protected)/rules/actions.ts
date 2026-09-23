@@ -82,3 +82,18 @@ export async function toggleClassificationRule(formData: FormData) {
   revalidatePath("/rules");
   redirect("/rules?success=Regra%20atualizada.");
 }
+
+export async function deleteClassificationRule(formData: FormData) {
+  const ruleId = formData.get("ruleId");
+  if (typeof ruleId !== "string" || !ruleId.trim()) {
+    ruleError("Regra inválida.");
+  }
+  const { supabase } = await owner();
+  const { error } = await supabase
+    .from("classification_rules")
+    .delete()
+    .eq("id", ruleId as string);
+  if (error) ruleError("Não foi possível excluir a regra.");
+  revalidatePath("/rules");
+  redirect("/rules?success=Regra%20exclu%C3%ADda.");
+}

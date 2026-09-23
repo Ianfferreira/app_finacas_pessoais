@@ -6,6 +6,23 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Corrigido
 
+- Visão Geral, Histórico e snapshots de fechamento agora calculam gastos
+  pessoais pela alocação efetivamente atribuída ao titular. Estornos reduzem o
+  gasto e não entram como receita, inclusive quando a direção bancária de
+  origem for neutra.
+- A Visão Geral agora permite navegar por competência e fechar ou reabrir o
+  mês consultado, em vez de limitar a operação ao mês corrente.
+- Regras de classificação agora podem ser excluídas, além de ativadas ou
+  desativadas. Aplicações históricas preservam a proveniência e o valor
+  aplicado, mesmo após a remoção da regra editável.
+
+### Adicionado
+
+- Configurações para cadastrar e desativar pessoas, categorias, contas e
+  cartões sem apagar registros já relacionados.
+- Exportação manual em ZIP contendo o JSON estruturado, o CSV de
+  movimentações e um aviso de privacidade. Arquivos privados e evidências
+  brutas continuam fora de todas as exportações.
 - O adapter de fatura Inter agora reconhece o rótulo abreviado de estorno
   usado pelo emissor antes de interpretar o sinal de crédito. Assim, um
   estorno não é importado como pagamento de fatura; a mudança está versionada

@@ -3,7 +3,11 @@ import Link from "next/link";
 import { ECONOMIC_NATURE_OPTIONS } from "@/domain/natures";
 import { createClient } from "@/lib/supabase/server";
 
-import { createClassificationRule, toggleClassificationRule } from "./actions";
+import {
+  createClassificationRule,
+  deleteClassificationRule,
+  toggleClassificationRule,
+} from "./actions";
 
 export default async function RulesPage({
   searchParams,
@@ -109,6 +113,12 @@ export default async function RulesPage({
                   />
                   <button className="button secondary" type="submit">
                     {rule.is_active ? "Desativar" : "Ativar"}
+                  </button>
+                </form>
+                <form action={deleteClassificationRule}>
+                  <input name="ruleId" type="hidden" value={rule.id} />
+                  <button className="button secondary" type="submit">
+                    Excluir
                   </button>
                 </form>
               </li>

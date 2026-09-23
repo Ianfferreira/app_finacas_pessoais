@@ -1459,9 +1459,31 @@ export type Database = {
         }
         Returns: string
       }
+      month_category_metrics: {
+        Args: { target_month: string }
+        Returns: {
+          category_name: string
+          personal_expenses: number
+        }[]
+      }
+      month_metrics: {
+        Args: { target_month: string }
+        Returns: {
+          income: number
+          personal_expenses: number
+        }[]
+      }
       month_quality_check: {
         Args: { target_month: string; target_user_id: string }
         Returns: Json
+      }
+      monthly_metrics_history: {
+        Args: never
+        Returns: {
+          competence_month: string
+          income: number
+          personal_expenses: number
+        }[]
       }
       reopen_month: { Args: { target_month: string }; Returns: undefined }
       reprocess_transaction_classification: {
