@@ -1,0 +1,308 @@
+.page {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.filters,
+.filters form,
+.categoryForm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filters > a {
+  min-height: 2.4rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.55rem 0.8rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.filters > a:hover,
+.filters > a:focus-visible,
+.activeFilter {
+  border-color: var(--primary);
+  background: var(--surface-accent);
+  color: var(--primary-hover) !important;
+}
+
+.filters form {
+  margin-left: 0.25rem;
+}
+
+.filters select,
+.categoryForm select {
+  min-height: 2.75rem;
+}
+
+.chart,
+.tableSection,
+.category {
+  border-top: 1px solid var(--border);
+  padding-top: 1.25rem;
+}
+
+.sectionHeading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.sectionHeading h2,
+.tableSection h2 {
+  margin: 0.2rem 0 0;
+  font-size: 1.1rem;
+}
+
+.sectionHeading > p,
+.helper {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.bars,
+.categoryPoints {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bars li {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.8fr) minmax(12rem, 1.2fr);
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.barLabel a,
+.categoryPoints a,
+.tableWrap a {
+  color: var(--primary);
+  font-weight: 750;
+}
+
+.barLabel span {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.barTracks {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.barTracks > span,
+.categoryPoints i {
+  display: block;
+  overflow: hidden;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--surface-soft);
+}
+
+.barTracks i,
+.categoryPoints i {
+  display: block;
+  min-width: 0.25rem;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.incomeBar {
+  background: var(--primary);
+}
+
+.expenseBar {
+  background: #c89a4b;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  margin-top: 0.75rem;
+}
+
+.tableWrap table {
+  width: 100%;
+  min-width: 56rem;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+}
+
+.tableWrap th,
+.tableWrap td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 0.6rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.tableWrap thead th {
+  color: var(--muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tableWrap td:not(:nth-child(2)) {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.status {
+  display: inline-flex;
+  border-radius: 999px;
+  padding: 0.28rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.closed {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.pending {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.progress {
+  background: var(--surface-soft);
+  color: var(--muted);
+}
+
+.qualityAlert {
+  margin: 0.35rem 0 0;
+  color: var(--warning-text);
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.categoryForm {
+  margin-top: 1rem;
+}
+
+.categoryForm label {
+  font-weight: 750;
+}
+
+.categoryPoints li {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.6fr) minmax(8rem, 0.5fr) minmax(
+      8rem,
+      1.4fr
+    );
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.categoryPoints span {
+  font-variant-numeric: tabular-nums;
+}
+
+.categoryPoints i {
+  background: var(--primary);
+}
+
+.empty,
+.error {
+  display: grid;
+  justify-items: start;
+  gap: 0.75rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: 0.85rem;
+  background: #fffefa;
+  padding: 1.25rem;
+}
+
+.empty h2,
+.empty p,
+.error h2,
+.error p {
+  margin: 0;
+}
+
+.empty p,
+.error p {
+  max-width: 60ch;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.error {
+  border-color: #dba59e;
+  background: var(--danger-bg);
+}
+
+.error p {
+  color: var(--danger-text);
+}
+
+@media (max-width: 44rem) {
+  .filters form {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .bars li,
+  .categoryPoints li {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .tableWrap {
+    overflow: visible;
+  }
+
+  .tableWrap table,
+  .tableWrap tbody {
+    display: grid;
+    min-width: 0;
+    gap: 0.75rem;
+  }
+
+  .tableWrap thead {
+    position: absolute;
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .tableWrap tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: #fffefa;
+    padding: 0.2rem 0.7rem;
+  }
+
+  .tableWrap th,
+  .tableWrap td {
+    border: 0;
+    padding: 0.55rem 0;
+  }
+
+  .tableWrap th:first-child,
+  .tableWrap td:nth-child(2),
+  .tableWrap td:last-child {
+    grid-column: 1 / -1;
+  }
+}
