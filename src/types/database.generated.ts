@@ -1571,6 +1571,10 @@ export type Database = {
         Args: { p_confirm_pending?: boolean; target_month: string }
         Returns: string
       }
+      confirm_possible_duplicate_candidate: {
+        Args: { p_candidate_id: string; p_canonical_transaction_id: string }
+        Returns: string
+      }
       confirm_reconciliation_candidates_for_link: {
         Args: {
           p_from_transaction_id: string
@@ -1588,6 +1592,10 @@ export type Database = {
           p_to_transaction_id: string
         }
         Returns: string
+      }
+      dismiss_possible_duplicate_candidate: {
+        Args: { p_candidate_id: string }
+        Returns: undefined
       }
       dismiss_reconciliation_candidate: {
         Args: { p_candidate_id: string }
@@ -1716,6 +1724,10 @@ export type Database = {
       }
       sync_card_payment_reconciliation_review: {
         Args: { p_payment_transaction_id: string; p_user_id: string }
+        Returns: undefined
+      }
+      sync_possible_duplicate_review_for_transaction: {
+        Args: { p_transaction_id: string; p_user_id: string }
         Returns: undefined
       }
       sync_reconciliation_review_for_transaction: {
