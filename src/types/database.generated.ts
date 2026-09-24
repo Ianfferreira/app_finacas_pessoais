@@ -1032,6 +1032,63 @@ export type Database = {
           },
         ]
       }
+      reconciliation_candidates: {
+        Row: {
+          amount: number
+          confidence: number
+          created_at: string
+          evidence: Json
+          from_transaction_id: string
+          id: string
+          link_type: Database["public"]["Enums"]["link_type"]
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["reconciliation_candidate_status"]
+          to_transaction_id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          confidence: number
+          created_at?: string
+          evidence: Json
+          from_transaction_id: string
+          id?: string
+          link_type: Database["public"]["Enums"]["link_type"]
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["reconciliation_candidate_status"]
+          to_transaction_id: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          confidence?: number
+          created_at?: string
+          evidence?: Json
+          from_transaction_id?: string
+          id?: string
+          link_type?: Database["public"]["Enums"]["link_type"]
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["reconciliation_candidate_status"]
+          to_transaction_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reconciliation_candidates_from_transaction_id_user_id_fkey"
+            columns: ["from_transaction_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id", "user_id"]
+          },
+          {
+            foreignKeyName: "reconciliation_candidates_to_transaction_id_user_id_fkey"
+            columns: ["to_transaction_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
       review_items: {
         Row: {
           created_at: string
@@ -1472,6 +1529,15 @@ export type Database = {
         Args: { p_confirm_pending?: boolean; target_month: string }
         Returns: string
       }
+      confirm_reconciliation_candidates_for_link: {
+        Args: {
+          p_from_transaction_id: string
+          p_link_type: Database["public"]["Enums"]["link_type"]
+          p_to_transaction_id: string
+          p_user_id: string
+        }
+        Returns: undefined
+      }
       create_confirmed_transaction_link: {
         Args: {
           p_amount: number
@@ -1480,6 +1546,10 @@ export type Database = {
           p_to_transaction_id: string
         }
         Returns: string
+      }
+      dismiss_reconciliation_candidate: {
+        Args: { p_candidate_id: string }
+        Returns: undefined
       }
       import_card_statement: {
         Args: {
@@ -1566,6 +1636,10 @@ export type Database = {
         }
         Returns: string
       }
+      refresh_transaction_reconciliation_candidates: {
+        Args: { p_transaction_id: string }
+        Returns: undefined
+      }
       reopen_month: { Args: { target_month: string }; Returns: undefined }
       reprocess_transaction_classification: {
         Args: { p_transaction_id: string }
@@ -1584,6 +1658,10 @@ export type Database = {
       }
       set_transaction_ownership: {
         Args: { p_allocations: Json; p_mode: string; p_transaction_id: string }
+        Returns: undefined
+      }
+      sync_reconciliation_review_for_transaction: {
+        Args: { p_transaction_id: string; p_user_id: string }
         Returns: undefined
       }
     }
@@ -1644,6 +1722,7 @@ export type Database = {
       monthly_closing_status: "in_progress" | "closed_with_pending" | "closed"
       owner_type: "self" | "third_party"
       parse_status: "pending" | "parsed" | "ignored" | "failed"
+      reconciliation_candidate_status: "suggested" | "confirmed" | "dismissed"
       review_item_status: "open" | "resolved" | "dismissed"
       review_item_type:
         | "category"
@@ -1848,6 +1927,7 @@ export const Constants = {
       monthly_closing_status: ["in_progress", "closed_with_pending", "closed"],
       owner_type: ["self", "third_party"],
       parse_status: ["pending", "parsed", "ignored", "failed"],
+      reconciliation_candidate_status: ["suggested", "confirmed", "dismissed"],
       review_item_status: ["open", "resolved", "dismissed"],
       review_item_type: [
         "category",
