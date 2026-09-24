@@ -143,6 +143,48 @@ export type Database = {
         }
         Relationships: []
       }
+      card_statement_payment_allocations: {
+        Row: {
+          amount: number
+          card_statement_id: string
+          created_at: string
+          id: string
+          payment_transaction_id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          card_statement_id: string
+          created_at?: string
+          id?: string
+          payment_transaction_id: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          card_statement_id?: string
+          created_at?: string
+          id?: string
+          payment_transaction_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "card_statement_payment_alloca_payment_transaction_id_user__fkey"
+            columns: ["payment_transaction_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id", "user_id"]
+          },
+          {
+            foreignKeyName: "card_statement_payment_allocatio_card_statement_id_user_id_fkey"
+            columns: ["card_statement_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "card_statements"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
       card_statements: {
         Row: {
           card_id: string
@@ -1616,6 +1658,14 @@ export type Database = {
           personal_expenses: number
         }[]
       }
+      record_card_statement_payment_allocation: {
+        Args: {
+          p_amount: number
+          p_card_statement_id: string
+          p_payment_transaction_id: string
+        }
+        Returns: string
+      }
       record_manual_third_party_entry: {
         Args: {
           p_amount: number
@@ -1640,6 +1690,10 @@ export type Database = {
         Args: { p_transaction_id: string }
         Returns: undefined
       }
+      remove_card_statement_payment_allocation: {
+        Args: { p_allocation_id: string }
+        Returns: undefined
+      }
       reopen_month: { Args: { target_month: string }; Returns: undefined }
       reprocess_transaction_classification: {
         Args: { p_transaction_id: string }
@@ -1658,6 +1712,10 @@ export type Database = {
       }
       set_transaction_ownership: {
         Args: { p_allocations: Json; p_mode: string; p_transaction_id: string }
+        Returns: undefined
+      }
+      sync_card_payment_reconciliation_review: {
+        Args: { p_payment_transaction_id: string; p_user_id: string }
         Returns: undefined
       }
       sync_reconciliation_review_for_transaction: {
