@@ -1711,6 +1711,10 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: undefined
       }
+      set_transaction_category_manual: {
+        Args: { p_category_id: string; p_transaction_id: string }
+        Returns: undefined
+      }
       set_transaction_nature_manual: {
         Args: {
           p_nature: Database["public"]["Enums"]["economic_nature"]
