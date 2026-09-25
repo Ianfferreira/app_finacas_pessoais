@@ -217,6 +217,12 @@ select:focus-visible,
   color: var(--text);
 }
 
+.danger {
+  border-color: #c46b60;
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
 .notice {
   border-radius: 0.5rem;
   padding: 0.75rem 0.875rem;
@@ -964,6 +970,765 @@ select:focus-visible,
   margin: 0;
 }
 
+.terra-ownership-form,
+.terra-settlement-form {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+.terra-ownership-form fieldset,
+.terra-settlement-form fieldset {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.terra-ownership-form legend,
+.terra-settlement-form legend {
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.terra-choice-row,
+.terra-segmented-control {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.terra-segmented-control {
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  padding: 0.25rem;
+}
+
+.terra-segmented-control button {
+  border: 0;
+  border-radius: 0.45rem;
+  background: transparent;
+  padding: 0.5rem 0.65rem;
+  color: var(--muted);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.terra-segmented-control button[aria-pressed="true"],
+.terra-choice-row button[aria-pressed="true"] {
+  background: var(--primary-soft);
+  color: var(--primary-hover);
+}
+
+.terra-allocation-list,
+.terra-open-entry-list {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.terra-allocation-row,
+.terra-open-entry-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(7rem, 0.7fr) auto;
+  align-items: end;
+  gap: 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 0.7rem;
+  padding: 0.75rem;
+}
+
+.terra-allocation-row > span {
+  align-self: center;
+  font-weight: 700;
+}
+
+.terra-icon-button {
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.terra-allocation-total {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  border-radius: 0.65rem;
+  background: var(--warning-bg);
+  padding: 0.75rem;
+  color: var(--warning-text);
+  font-size: 0.85rem;
+}
+
+.terra-allocation-total.is-valid {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.terra-open-entry-list li {
+  grid-template-columns: 1fr;
+}
+
+.terra-open-entry-list li > label:first-child {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+}
+
+.terra-open-entry-list li strong {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.terra-open-entry-list input[type="checkbox"] {
+  min-height: 1rem;
+}
+
+.terra-duplicate-review,
+.terra-settlement-section {
+  margin-top: 2rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.5rem;
+}
+
+.terra-duplicate-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.terra-duplicate-columns strong,
+.terra-duplicate-columns .muted {
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.terra-fingerprint-list,
+.terra-quality-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.terra-fingerprint-list div,
+.terra-quality-details div {
+  border-radius: 0.55rem;
+  background: var(--surface-soft);
+  padding: 0.6rem;
+}
+
+.terra-fingerprint-list dt,
+.terra-quality-details dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.terra-fingerprint-list dd,
+.terra-quality-details dd {
+  margin: 0.2rem 0 0;
+  overflow-wrap: anywhere;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.terra-duplicate-decision {
+  margin-top: 0.85rem;
+}
+
+.terra-duplicate-decision summary {
+  color: var(--primary);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.terra-duplicate-decision > p {
+  max-width: 52rem;
+  margin: 0.65rem 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.terra-duplicate-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+}
+
+.terra-duplicate-actions form {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: var(--surface-soft);
+  padding: 0.75rem;
+}
+
+.terra-duplicate-actions form:last-child {
+  grid-column: 1 / -1;
+  justify-items: start;
+  background: var(--surface);
+}
+
+.terra-settlement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: 1rem;
+}
+
+.terra-settlement-card,
+.terra-closing-panel {
+  border: 1px solid var(--border);
+  border-radius: 0.85rem;
+  background: #fffefa;
+  padding: 1rem;
+}
+
+.terra-settlement-card h3,
+.terra-closing-panel h2 {
+  margin: 0.2rem 0;
+  font-size: 1rem;
+}
+
+.terra-closing-panel {
+  width: min(100%, 42rem);
+  margin-top: 0.75rem;
+  border-color: #e4c875;
+  background: #fffaf0;
+}
+
+.terra-closing-panel > p {
+  color: var(--muted);
+}
+
+.terra-closing-panel form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.terra-confirmation-check {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  font-size: 0.85rem;
+}
+
+.terra-confirmation-check input {
+  min-height: 1rem;
+  margin-top: 0.2rem;
+}
+
+.terra-movements-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.terra-movements-page .back-link,
+.terra-movements-page .lede {
+  margin-bottom: 0;
+}
+
+.terra-movements-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem 1rem;
+  border-radius: 0.8rem;
+  background: var(--surface-accent);
+  padding: 0.8rem 0.9rem;
+}
+
+.terra-movements-actions span {
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.terra-movements-toolbar {
+  display: grid;
+  grid-template-columns: minmax(14rem, 23rem) minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 0.9rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1.25rem;
+}
+
+.terra-search-field span {
+  font-size: 0.82rem;
+}
+
+.terra-search-field input {
+  width: 100%;
+}
+
+.terra-movement-tabs {
+  display: flex;
+  overflow-x: auto;
+  align-items: center;
+  gap: 0.3rem;
+  padding-bottom: 0.1rem;
+}
+
+.terra-movement-tabs button {
+  min-height: 2.5rem;
+  flex: 0 0 auto;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  padding: 0.45rem 0.7rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.terra-movement-tabs button:hover,
+.terra-movement-tabs button[aria-selected="true"] {
+  border-color: var(--border);
+  background: var(--surface-soft);
+  color: var(--primary-hover);
+}
+
+.terra-result-count {
+  margin: 0 0 0.65rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.terra-movements-table-wrap {
+  overflow-x: auto;
+  margin: 0 -0.25rem;
+}
+
+.terra-movements-table {
+  width: 100%;
+  min-width: 64rem;
+  border-spacing: 0;
+  border-collapse: separate;
+  font-size: 0.84rem;
+}
+
+.terra-movements-table th {
+  border-bottom: 1px solid var(--border-strong);
+  padding: 0.7rem 0.6rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.terra-movements-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.85rem 0.6rem;
+  vertical-align: middle;
+}
+
+.terra-movements-table tbody tr:hover td {
+  background: #fffefa;
+}
+
+.terra-movements-table td:nth-child(2) {
+  min-width: 15rem;
+  max-width: 25rem;
+}
+
+.terra-movements-table td strong,
+.terra-movements-table td span:not(.terra-status-chip) {
+  display: block;
+}
+
+.terra-movements-table td strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.terra-movements-table td span:not(.terra-status-chip) {
+  margin-top: 0.15rem;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.terra-status-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: var(--success-bg);
+  padding: 0.28rem 0.55rem;
+  color: var(--success-text);
+  font-size: 0.74rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.terra-status-chip.is-pending {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.terra-amount-cell {
+  font-variant-numeric: tabular-nums;
+  text-align: right !important;
+  white-space: nowrap;
+}
+
+.terra-row-action {
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.terra-row-action:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+  text-underline-offset: 0.18rem;
+}
+
+.terra-empty-flow {
+  display: grid;
+  justify-items: start;
+  gap: 0.75rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: 0.85rem;
+  background: #fffefa;
+  padding: 1.25rem;
+}
+
+.terra-empty-flow h2,
+.terra-empty-flow p {
+  margin: 0;
+}
+
+.terra-empty-flow h2 {
+  font-size: 1.05rem;
+}
+
+.terra-empty-flow p {
+  max-width: 58ch;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.terra-review-empty {
+  margin-top: 1rem;
+}
+
+.terra-empty-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.terra-empty-steps span {
+  border-radius: 999px;
+  background: var(--surface-soft);
+  padding: 0.35rem 0.6rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.terra-drawer-layer {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) min(100%, 39rem);
+}
+
+.terra-drawer-backdrop {
+  border: 0;
+  background: rgb(24 31 27 / 38%);
+  cursor: default;
+}
+
+.terra-movement-drawer {
+  overflow-y: auto;
+  min-width: 0;
+  background: var(--surface);
+  box-shadow: -1rem 0 2.5rem rgb(37 43 39 / 15%);
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.terra-drawer-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+}
+
+.terra-drawer-heading h2 {
+  margin: 0.25rem 0 0;
+  font-family: Literata, Georgia, serif;
+  font-size: 1.45rem;
+  line-height: 1.2;
+}
+
+.terra-drawer-heading > div > p:last-child {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.terra-detail-section {
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 0;
+}
+
+.terra-detail-section h3,
+.terra-detail-section p {
+  margin: 0;
+}
+
+.terra-detail-section h3 {
+  font-size: 0.98rem;
+}
+
+.terra-detail-section > p {
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.terra-detail-section .movement-nature {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.terra-detail-section .movement-nature label {
+  grid-column: 1 / -1;
+}
+
+.terra-detail-section .movement-nature .button {
+  grid-column: 2;
+}
+
+.terra-provenance {
+  margin-top: 0.7rem !important;
+  color: var(--muted) !important;
+  font-size: 0.78rem !important;
+}
+
+.terra-context-note {
+  background: color-mix(in srgb, var(--surface-accent) 70%, transparent);
+  margin: 1.25rem -0.7rem 0;
+  border: 0;
+  border-radius: 0.7rem;
+  padding: 0.9rem 0.7rem;
+}
+
+.terra-original-data dl {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0.9rem 0 0;
+}
+
+.terra-original-data dl div {
+  border-radius: 0.6rem;
+  background: var(--surface-soft);
+  padding: 0.65rem;
+}
+
+.terra-original-data dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.terra-original-data dd {
+  margin: 0.2rem 0 0;
+  overflow-wrap: anywhere;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.terra-payment-reconciliation h3,
+.terra-payment-reconciliation > p {
+  margin: 0;
+}
+
+.terra-payment-reconciliation > p {
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.terra-reconciliation-totals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0.9rem 0;
+}
+
+.terra-reconciliation-totals div {
+  border-radius: 0.6rem;
+  background: var(--surface-soft);
+  padding: 0.65rem;
+}
+
+.terra-reconciliation-totals dt {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.terra-reconciliation-totals dd {
+  margin: 0.2rem 0 0;
+  font-size: 0.86rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+}
+
+.terra-payment-allocation-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.terra-existing-payment-allocations {
+  margin: 0.9rem 0;
+}
+
+.terra-existing-payment-allocations h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.88rem;
+}
+
+.terra-existing-payment-allocations ul {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.terra-existing-payment-allocations li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: var(--surface-soft);
+  padding: 0.65rem;
+}
+
+.terra-existing-payment-allocations li > span strong,
+.terra-existing-payment-allocations li > span small {
+  display: block;
+}
+
+.terra-existing-payment-allocations li > span strong {
+  font-size: 0.82rem;
+}
+
+.terra-existing-payment-allocations li > span small {
+  margin-top: 0.15rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.terra-removal-confirmation {
+  display: grid;
+  flex-basis: 100%;
+  gap: 0.55rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.65rem;
+}
+
+.terra-removal-confirmation p {
+  margin: 0;
+  color: var(--danger-text);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.terra-removal-confirmation > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.terra-removal-confirmation form {
+  margin: 0;
+}
+
+.terra-reconciliation-candidates {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.terra-reconciliation-candidates li {
+  display: grid;
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: #fffefa;
+  padding: 0.85rem;
+}
+
+.terra-reconciliation-candidates strong,
+.terra-reconciliation-candidates span,
+.terra-reconciliation-candidates small {
+  display: block;
+}
+
+.terra-reconciliation-candidates strong {
+  font-size: 0.88rem;
+}
+
+.terra-reconciliation-candidates span,
+.terra-reconciliation-candidates small {
+  margin-top: 0.25rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.terra-candidate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.terra-candidate-actions form {
+  margin: 0;
+}
+
 @media (min-width: 72rem) {
   .terra-metric-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1034,6 +1799,107 @@ select:focus-visible,
     border-top: 0;
     padding-top: 0;
   }
+
+  .terra-movements-toolbar {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .terra-result-count {
+    margin: 0;
+  }
+
+  .terra-drawer-layer {
+    grid-template-columns: 1fr;
+  }
+
+  .terra-drawer-backdrop {
+    display: none;
+  }
+
+  .terra-movements-table-wrap {
+    overflow: visible;
+    margin: 0;
+  }
+
+  .terra-movements-table,
+  .terra-movements-table tbody {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    gap: 0.75rem;
+  }
+
+  .terra-movements-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .terra-movements-table tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 0.8rem;
+    background: #fffefa;
+    padding: 0.25rem 0.7rem;
+  }
+
+  .terra-movements-table td,
+  .terra-movements-table td:nth-child(2) {
+    display: grid;
+    min-width: 0;
+    border: 0;
+    padding: 0.55rem 0;
+  }
+
+  .terra-movements-table td:not(:last-child)::before {
+    content: attr(data-label);
+    margin-bottom: 0.2rem;
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .terra-movements-table td:nth-child(2) {
+    grid-column: 1 / -1;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .terra-movements-table td:nth-child(2)::before {
+    display: none;
+  }
+
+  .terra-movements-table td strong {
+    white-space: normal;
+  }
+
+  .terra-movements-table .terra-amount-cell {
+    text-align: left !important;
+  }
+
+  .terra-movements-table td:last-child {
+    grid-column: 1 / -1;
+    padding-top: 0.3rem;
+  }
+
+  .terra-reconciliation-totals {
+    grid-template-columns: 1fr;
+  }
+
+  .terra-duplicate-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .terra-duplicate-actions form:last-child {
+    grid-column: auto;
+  }
 }
 
 @media (max-width: 32rem) {
@@ -1065,6 +1931,15 @@ select:focus-visible,
     width: 100%;
   }
 
+  .terra-allocation-row,
+  .terra-duplicate-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .terra-icon-button {
+    width: 100%;
+  }
+
   .terra-workspace-content .movement-nature {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -1074,5 +1949,18 @@ select:focus-visible,
   .terra-workspace-content .movement-nature select {
     min-width: 0;
     max-width: 100%;
+  }
+
+  .terra-movements-actions {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .terra-detail-section .movement-nature {
+    grid-template-columns: 1fr;
+  }
+
+  .terra-detail-section .movement-nature .button {
+    grid-column: 1;
   }
 }

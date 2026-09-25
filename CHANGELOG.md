@@ -15,6 +15,24 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
   Regras e Configurações agora compartilham a navegação, a estrutura
   responsiva e os componentes visuais do design system Terra, preservando as
   consultas e ações de servidor existentes.
+- Movimentações agora oferece busca, abas por natureza e uma tabela no desktop
+  que se transforma em cartões no celular. O detalhe lateral separa dado
+  original de interpretação editável e torna a titularidade de gastos e
+  estornos acessível com explicação contextual.
+- O estado vazio de Revisão passou a explicar por que não há pendências e como
+  encontrar “100% minha”, “Outra pessoa” e “Dividir” sem induzir rateio para
+  entradas bancárias.
+- Movimentações agora exibe sugestões auditáveis de conciliação para
+  transferências próprias e estornos, com evidências legíveis e decisões
+  explícitas para confirmar ou descartar. Pagamentos de fatura passaram a
+  permitir alocações parciais para faturas documentadas, sem criar gasto novo.
+- Revisão agora salva categoria e natureza exclusivamente pelas RPCs manuais
+  auditáveis. Possíveis duplicidades exigem uma escolha explícita do registro
+  canônico ou um descarte; pagamentos de fatura também exibem a alocação já
+  feita e pedem confirmação antes de removê-la.
+- Revisão, Terceiros e Visão Geral passaram a consumir as RPCs atômicas já
+  disponíveis para rateio de titularidade, liquidação de terceiros e qualidade
+  de fechamento, sem escrita direta nas projeções financeiras ou na auditoria.
 
 ### Corrigido
 

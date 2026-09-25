@@ -2,8 +2,9 @@ import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
 import { TerraPage } from "@/features/ui/terra-page";
+import { SettlementForm } from "@/features/third-parties/settlement-form";
 
-import { recordThirdPartyEntry } from "./actions";
+import { recordThirdPartyEntry, recordThirdPartySettlement } from "./actions";
 
 const money = new Intl.NumberFormat("pt-BR", {
   style: "currency",
@@ -17,20 +18,24 @@ export default async function ThirdPartiesPage({
 }) {
   const { error, success } = await searchParams;
   const supabase = await createClient();
-  const [{ data: people }, { data: entries }] = await Promise.all([
-    supabase
-      .from("people")
-      .select("id, full_name")
-      .eq("is_active", true)
-      .order("full_name"),
-    supabase
-      .from("third_party_entries")
-      .select(
-        "id, person_id, amount, kind, occurred_on, note, people(full_name)",
-      )
-      .order("occurred_on", { ascending: false })
-      .limit(200),
-  ]);
+  const [{ data: people }, { data: entries }, { data: settlementAllocations }] =
+    await Promise.all([
+      supabase
+        .from("people")
+        .select("id, full_name")
+        .eq("is_active", true)
+        .order("full_name"),
+      supabase
+        .from("third_party_entries")
+        .select(
+          "id, person_id, amount, kind, occurred_on, note, people(full_name)",
+        )
+        .order("occurred_on", { ascending: false })
+        .limit(200),
+      supabase
+        .from("settlement_allocations")
+        .select("third_party_entry_id, amount"),
+    ]);
   const balances = new Map<string, { name: string; amount: number }>();
   for (const entry of entries ?? []) {
     const person = Array.isArray(entry.people) ? entry.people[0] : entry.people;
@@ -40,6 +45,35 @@ export default async function ThirdPartiesPage({
     };
     current.amount += entry.amount;
     balances.set(entry.person_id, current);
+  }
+  const settledByEntry = new Map<string, number>();
+  for (const allocation of settlementAllocations ?? []) {
+    settledByEntry.set(
+      allocation.third_party_entry_id,
+      (settledByEntry.get(allocation.third_party_entry_id) ?? 0) +
+        allocation.amount,
+    );
+  }
+  const openEntriesByPerson = new Map<
+    string,
+    { id: string; label: string; openAmount: number }[]
+  >();
+  for (const entry of entries ?? []) {
+    if (
+      (entry.kind !== "charge" && entry.kind !== "adjustment") ||
+      entry.amount <= 0
+    ) {
+      continue;
+    }
+    const openAmount = entry.amount - (settledByEntry.get(entry.id) ?? 0);
+    if (openAmount <= 0) continue;
+    const current = openEntriesByPerson.get(entry.person_id) ?? [];
+    current.push({
+      id: entry.id,
+      label: `${entry.occurred_on} · ${entry.note ?? "Cobrança sem observação"}`,
+      openAmount,
+    });
+    openEntriesByPerson.set(entry.person_id, current);
   }
   return (
     <TerraPage current="/third-parties">
@@ -121,6 +155,49 @@ export default async function ThirdPartiesPage({
             );
           })}
         </ul>
+        <section
+          className="terra-settlement-section"
+          aria-labelledby="settlement-heading"
+        >
+          <h2 id="settlement-heading">Liquidações pendentes</h2>
+          <p className="muted">
+            Um PIX ou reembolso só baixa as cobranças escolhidas explicitamente.
+            Qualquer excedente exige classificação separada.
+          </p>
+          {!openEntriesByPerson.size ? (
+            <p className="terra-empty-state">
+              Não há cobranças abertas para liquidar.
+            </p>
+          ) : (
+            <div className="terra-settlement-grid">
+              {[...openEntriesByPerson.entries()].map(
+                ([personId, openEntries]) => {
+                  const balance = balances.get(personId);
+                  return (
+                    <article className="terra-settlement-card" key={personId}>
+                      <h3>{balance?.name ?? "Pessoa"}</h3>
+                      <p className="muted">
+                        Em aberto:{" "}
+                        {money.format(
+                          openEntries.reduce(
+                            (total, entry) => total + entry.openAmount,
+                            0,
+                          ),
+                        )}
+                      </p>
+                      <SettlementForm
+                        action={recordThirdPartySettlement}
+                        entries={openEntries}
+                        personId={personId}
+                        personName={balance?.name ?? "esta pessoa"}
+                      />
+                    </article>
+                  );
+                },
+              )}
+            </div>
+          )}
+        </section>
       </section>
     </TerraPage>
   );

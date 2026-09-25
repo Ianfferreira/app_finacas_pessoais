@@ -25,6 +25,14 @@ export async function closeCurrentMonth(formData: FormData) {
   const supabase = await createClient();
   const month = targetMonth(formData);
   const confirmPending = formData.get("confirmPending") === "true";
+  const { error: qualityError } = await supabase.rpc("month_closing_quality", {
+    target_month: month,
+  });
+  if (qualityError) {
+    redirect(
+      `/dashboard?month=${month.slice(0, 7)}&error=N%C3%A3o%20foi%20poss%C3%ADvel%20conferir%20a%20qualidade%20do%20m%C3%AAs.`,
+    );
+  }
   const { error } = await supabase.rpc("close_month", {
     target_month: month,
     p_confirm_pending: confirmPending,

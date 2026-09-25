@@ -26,6 +26,16 @@ const formatMonth = new Intl.DateTimeFormat("pt-BR", {
 
 const MONTH = /^(\d{4})-(0[1-9]|1[0-2])$/;
 
+type ClosingQuality = {
+  pendingCount: number;
+  pendingAmount: number;
+  uncategorizedExpenses: number;
+  unclassifiedTransactions: number;
+  unresolvedOwnership: number;
+  unresolvedReconciliations: number;
+  possibleDuplicates: number;
+};
+
 function currentMonth() {
   const today = new Date();
   return `${today.getUTCFullYear()}-${String(today.getUTCMonth() + 1).padStart(2, "0")}-01`;
@@ -48,6 +58,27 @@ function closingLabel(status: string | null | undefined): string {
   return "Em andamento";
 }
 
+function qualityValue(value: unknown, key: string): number {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return 0;
+  const entry = (value as Record<string, unknown>)[key];
+  return typeof entry === "number" && Number.isFinite(entry) ? entry : 0;
+}
+
+function parseClosingQuality(value: unknown): ClosingQuality {
+  return {
+    pendingCount: qualityValue(value, "pending_count"),
+    pendingAmount: qualityValue(value, "pending_amount"),
+    uncategorizedExpenses: qualityValue(value, "uncategorized_expenses"),
+    unclassifiedTransactions: qualityValue(value, "unclassified_transactions"),
+    unresolvedOwnership: qualityValue(value, "unresolved_ownership"),
+    unresolvedReconciliations: qualityValue(
+      value,
+      "unresolved_reconciliations",
+    ),
+    possibleDuplicates: qualityValue(value, "possible_duplicates"),
+  };
+}
+
 export default async function DashboardPage({
   searchParams,
 }: {
@@ -68,6 +99,7 @@ export default async function DashboardPage({
     { data: categories },
     review,
     { data: closing },
+    { data: closingQualityRaw },
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -90,6 +122,7 @@ export default async function DashboardPage({
       .select("status, version")
       .eq("month", month)
       .maybeSingle(),
+    supabase.rpc("month_closing_quality", { target_month: month }),
   ]);
 
   const income = metrics?.income ?? 0;
@@ -106,6 +139,7 @@ export default async function DashboardPage({
   const isPreliminary = closing?.status !== "closed";
   const currentClosingLabel = closingLabel(closing?.status);
   const pendingCount = review.count ?? 0;
+  const closingQuality = parseClosingQuality(closingQualityRaw);
   const monthLabel = formatMonth.format(new Date(`${month}T00:00:00Z`));
   const metricDetail = isPreliminary
     ? "Valor sujeito às pendências do mês."
@@ -168,12 +202,67 @@ export default async function DashboardPage({
         Histórico
       </Link>
       {closing?.status === "in_progress" || !closing ? (
-        <form action={closeCurrentMonth}>
-          <input name="month" type="hidden" value={month} />
-          <button className="button secondary" type="submit">
-            Fechar {monthKey}
-          </button>
-        </form>
+        closingQuality.pendingCount ? (
+          <section
+            className="terra-closing-panel"
+            aria-labelledby="closing-quality-heading"
+          >
+            <div>
+              <p className="eyebrow">Antes de fechar</p>
+              <h2 id="closing-quality-heading">Há pendências neste mês</h2>
+              <p>
+                {closingQuality.pendingCount} itens impactam{" "}
+                {formatCurrency.format(closingQuality.pendingAmount)}. Fechar
+                agora manterá o mês como “fechado com pendências”.
+              </p>
+            </div>
+            <dl className="terra-quality-details">
+              <div>
+                <dt>Categoria</dt>
+                <dd>{closingQuality.uncategorizedExpenses}</dd>
+              </div>
+              <div>
+                <dt>Natureza</dt>
+                <dd>{closingQuality.unclassifiedTransactions}</dd>
+              </div>
+              <div>
+                <dt>Titularidade</dt>
+                <dd>{closingQuality.unresolvedOwnership}</dd>
+              </div>
+              <div>
+                <dt>Conciliação</dt>
+                <dd>{closingQuality.unresolvedReconciliations}</dd>
+              </div>
+              <div>
+                <dt>Duplicidade</dt>
+                <dd>{closingQuality.possibleDuplicates}</dd>
+              </div>
+            </dl>
+            <form action={closeCurrentMonth}>
+              <input name="month" type="hidden" value={month} />
+              <label className="terra-confirmation-check">
+                <input
+                  name="confirmPending"
+                  required
+                  type="checkbox"
+                  value="true"
+                />
+                Confirmo que desejo fechar este mês mesmo com as pendências
+                acima.
+              </label>
+              <button className="button secondary" type="submit">
+                Fechar {monthKey} com pendências
+              </button>
+            </form>
+          </section>
+        ) : (
+          <form action={closeCurrentMonth}>
+            <input name="month" type="hidden" value={month} />
+            <button className="button secondary" type="submit">
+              Fechar {monthKey}
+            </button>
+          </form>
+        )
       ) : (
         <form action={reopenCurrentMonth}>
           <input name="month" type="hidden" value={month} />
